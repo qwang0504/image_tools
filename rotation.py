@@ -1,7 +1,14 @@
 import numpy as np
 from numpy.typing import NDArray
 import cv2
-from geometry.rect import Rect
+from dataclasses import dataclass
+
+@dataclass
+class Rect:
+    left: int
+    bottom: int
+    width: int
+    height: int
 
 def rotation_matrix(angle_deg: float) -> NDArray:
     angle_rad = np.deg2rad(angle_deg)
