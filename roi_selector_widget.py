@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QHBoxLayout, QVBoxLayout, QListWidget, QPushButton
 from PyQt5.QtGui import QPainter, QColor, QBrush, QPen
-from PyQt5.QtCore import QPoint, QRect
+from PyQt5.QtCore import Qt, QPoint, QRect
 from .qt_widgets import NDarray_to_QPixmap
 
 
@@ -76,12 +76,17 @@ class ROISelectorWidget(QWidget):
         self.current_roi = self.ROIs[index]
 
     def on_mouse_press(self, event):
-        pos = event.pos()
-        self.current_roi = QRect(pos.x(),pos.y(),0,0)
-        self.ROIs.append(self.current_roi)
-        idx = len(self.ROIs)
-        self.roi_list.addItem(str(idx))
-        self.roi_list.setCurrentRow(idx-1)
+        if event.button() == Qt.LeftButton:
+            # left-click always create a new ROI
+            pos = event.pos()
+            self.current_roi = QRect(pos.x(),pos.y(),0,0)
+            self.ROIs.append(self.current_roi)
+            idx = len(self.ROIs)
+            self.roi_list.addItem(str(idx))
+            self.roi_list.setCurrentRow(idx-1)
+        elif event.button() == Qt.RightButton:
+            # you can resize current ROI with right-click
+            pass
         self.update()
 
     def on_mouse_move(self, event):
