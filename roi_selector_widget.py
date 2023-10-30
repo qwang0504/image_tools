@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QHBoxLayout, QVBoxLayout, QListWidget, QPushButton
+from PyQt5.QtWidgets import QDialog, QWidget, QLabel, QHBoxLayout, QVBoxLayout, QListWidget, QPushButton
 from PyQt5.QtGui import QPainter, QColor, QBrush, QPen
 from PyQt5.QtCore import Qt, QPoint, QRect
 from .qt_widgets import NDarray_to_QPixmap
@@ -70,7 +70,7 @@ class ROISelectorWidget(QWidget):
             self.ROIs.pop(idx)
 
     def on_done(self):
-        print([(r.x(), r.y(), r.width(), r.height()) for r in self.ROIs])
+        pass
 
     def on_roi_selection(self, index):
         self.current_roi = self.ROIs[index]
@@ -99,4 +99,6 @@ class ROISelectorWidget(QWidget):
         return [(r.x(), r.y(), r.width(), r.height()) for r in self.ROIs]
 
 
-
+class ROISelectorDialog(QDialog,ROISelectorWidget):
+    def on_done(self):
+        pass
