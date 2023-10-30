@@ -19,7 +19,8 @@ class ROISelectorWidget(QWidget):
     
     def declare_components(self):
         self.image_label = QLabel(self)
-        self.image_label.setPixmap(NDarray_to_QPixmap(self.image))
+        if self.image is not None:
+            self.image_label.setPixmap(NDarray_to_QPixmap(self.image))
         self.image_label.mousePressEvent = self.on_mouse_press
         self.image_label.mouseMoveEvent = self.on_mouse_move
 
@@ -47,21 +48,22 @@ class ROISelectorWidget(QWidget):
 
     def paintEvent(self, event):
         # redraw on top of image
-        self.image_label.setPixmap(NDarray_to_QPixmap(self.image))
-        painter = QPainter(self.image_label.pixmap())
-        pen = QPen()
-        pen.setWidth(3)
-        for roi in self.ROIs:
-            pen_color = QColor(70, 0, 0, 60)
-            brush_color = QColor(100, 10, 10, 40) 
-            if roi == self.current_roi:
-                pen_color = QColor(0, 70, 0, 60)
-                brush_color = QColor(10, 100, 10, 40) 
-            pen.setColor(pen_color)
-            brush = QBrush(brush_color)  
-            painter.setPen(pen)
-            painter.setBrush(brush)   
-            painter.drawRect(roi)
+        if self.image is not None:
+            self.image_label.setPixmap(NDarray_to_QPixmap(self.image))
+            painter = QPainter(self.image_label.pixmap())
+            pen = QPen()
+            pen.setWidth(3)
+            for roi in self.ROIs:
+                pen_color = QColor(70, 0, 0, 60)
+                brush_color = QColor(100, 10, 10, 40) 
+                if roi == self.current_roi:
+                    pen_color = QColor(0, 70, 0, 60)
+                    brush_color = QColor(10, 100, 10, 40) 
+                pen.setColor(pen_color)
+                brush = QBrush(brush_color)  
+                painter.setPen(pen)
+                painter.setBrush(brush)   
+                painter.drawRect(roi)
 
     def on_delete(self):
         if len(self.ROIs) > 0:
@@ -82,7 +84,7 @@ class ROISelectorWidget(QWidget):
             self.current_roi = QRect(pos.x(),pos.y(),0,0)
             self.ROIs.append(self.current_roi)
             idx = len(self.ROIs)
-            self.roi_list.addItem(str(idx))
+            self.roi_list.addItem(str(idx-1))
             self.roi_list.setCurrentRow(idx-1)
         elif event.button() == Qt.RightButton:
             # you can resize current ROI with right-click
