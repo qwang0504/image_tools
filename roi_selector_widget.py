@@ -101,4 +101,4 @@ class ROISelectorWidget(QWidget):
 
 class ROISelectorDialog(QDialog,ROISelectorWidget):
     def on_done(self):
-        pass
+        self.accept()
