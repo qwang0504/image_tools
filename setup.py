@@ -12,6 +12,8 @@ setup(
         "numpy", 
         "scipy",
         "opencv-python",
-        "scikit-image"
+        "scikit-image",
+        "PyQt5",
+        "geometry @ git+https://github.com/ElTinmar/geometry.git@main"
     ]
 )
