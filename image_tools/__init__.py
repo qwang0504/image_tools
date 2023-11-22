@@ -1,6 +1,6 @@
-__all__ = ["rotation", "contrast", "convert", "morphology", "roi_selector_widget"]
+__all__ = ["rotation", "enhance", "convert", "morphology", "roi_selector_widget"]
 
-from .contrast import *
+from .enhance import *
 from .convert import *
 from .rotation import *
 from .morphology import *
