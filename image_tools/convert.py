@@ -44,10 +44,10 @@ def im2uint8(input_image: NDArray) -> NDArray:
 
     if np.issubdtype(input_image.dtype, np.integer):
         ui_info = np.iinfo(input_image.dtype)
-        uint8_image = (input_image *  256/ui_info.max).astype(np.uint8)
+        uint8_image = (input_image *  255/ui_info.max).astype(np.uint8)
 
     elif np.issubdtype(input_image.dtype, np.floating):
-        uint8_image = (input_image *  256).astype(np.uint8)
+        uint8_image = (input_image *  255).astype(np.uint8)
 
     else:
         raise ValueError('wrong image type, cannot convert to uint8')
