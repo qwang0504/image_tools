@@ -16,6 +16,9 @@ def im2single(input_image: NDArray) -> NDArray:
         # if already a floating type, convert to single precision
         single_image = input_image.astype(np.float32)
 
+    elif input_image.dtype == np.bool_:
+        single_image = input_image.astype(np.float32) 
+
     else:
         raise ValueError('wrong image type, cannot convert to single')
 
@@ -35,6 +38,9 @@ def im2double(input_image: NDArray) -> NDArray:
         # if already a floating type, convert to double precision
         double_image = input_image.astype(np.float64)
 
+    elif input_image.dtype == np.bool_:
+        double_image = input_image.astype(np.float64) 
+
     else:
         raise ValueError('wrong image type, cannot convert to double')
     
@@ -48,6 +54,9 @@ def im2uint8(input_image: NDArray) -> NDArray:
 
     elif np.issubdtype(input_image.dtype, np.floating):
         uint8_image = (input_image *  255).astype(np.uint8)
+
+    elif input_image.dtype == np.bool_:
+        uint8_image = 255 * input_image.astype(np.uint8) 
 
     else:
         raise ValueError('wrong image type, cannot convert to uint8')
