@@ -96,7 +96,7 @@ def im2rgb(input_image: NDArray) -> NDArray:
 
     if len(shp) == 3 and shp[2] == 3:
         # already RGB, nothing to do
-        return input_image.copy()
+        return input_image
     
     elif len(shp) == 2:
         rgb_image = np.dstack((input_image, input_image, input_image))
