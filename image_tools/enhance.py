@@ -5,6 +5,8 @@ from scipy import ndimage
 import cv2
 from .convert import im2single
 
+#TODO try to optimize this (GPU?)
+
 def enhance(
         image: NDArray, 
         contrast: float = 1.0,
