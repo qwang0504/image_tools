@@ -23,15 +23,10 @@ def enhance(
     output = im2single(image)
 
     # brightness, contrast, gamma
-    with np.errstate(invalid='ignore'):
-        # negative values raised to a non-integral value will return nan.
-        # suppress the asociated warning 
-        output = contrast*(output+brightness)**gamma
-        
-        # remove nans and clip between 0 and 1
-        output[np.isnan(output)] = 0
-        output[output<0] = 0
-        output[output>1] = 1
+    output = contrast*(output+brightness)**gamma
+    
+    # clip between 0 and 1
+    np.clip(output, 0, 1, out=output)
 
     # blur
     if (blur_size_px is not None) and (blur_size_px > 0):
@@ -39,6 +34,6 @@ def enhance(
 
     # median filter
     if (medfilt_size_px is not None) and (medfilt_size_px > 0):
-        output = ndimage.median_filter(output, size = medfilt_size_px)
+        ndimage.median_filter(output, size = medfilt_size_px, output=output)
 
     return output
