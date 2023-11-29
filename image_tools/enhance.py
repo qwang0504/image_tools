@@ -25,7 +25,7 @@ def enhance(
     output = im2single(image)
 
     # brightness, contrast, gamma
-    output = contrast*(output+brightness)**gamma
+    output = contrast*(output**gamma)+brightness
     
     # clip between 0 and 1
     np.clip(output, 0, 1, out=output)
