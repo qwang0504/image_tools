@@ -12,5 +12,6 @@ dependencies:
   - scikit-image
   - cupy
   - pip:
+    - cucim
     - git+https://github.com/ElTinmar/qt_widgets.git@main
     - git+https://github.com/ElTinmar/geometry.git@main
