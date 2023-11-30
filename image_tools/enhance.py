@@ -1,13 +1,16 @@
 from numpy.typing import NDArray
 import numpy as np
 from typing import Optional
-from scipy import ndimage as ndi
+from scipy.signal import medfilt2d
 import cv2
-from .convert import im2single
+from .convert import im2single, im2single_GPU
 
 import cupy as cp
 from cupy.typing import NDArray as CuNDArray
 from cupyx.scipy import ndimage as cu_ndi
+
+# TODO this appears to be mostly single-threaded, profile it
+# NOTE median filter becomes prohibitively slow as kernel size increases
 
 def enhance(
         image: NDArray, 
@@ -38,7 +41,8 @@ def enhance(
 
     # median filter
     if (medfilt_size_px is not None) and (medfilt_size_px > 0):
-        ndi.median_filter(output, size = medfilt_size_px, output=output)
+        medfilt_size_px = medfilt_size_px + int(medfilt_size_px % 2 == 0)
+        output = medfilt2d(output, kernel_size = medfilt_size_px)
 
     return output
 
@@ -67,10 +71,10 @@ def enhance_GPU(
 
     # blur
     if (blur_size_px is not None) and (blur_size_px > 0):
-        cu_ndi.gaussian_filter(output, size = blur_size_px, output=output)
+        cu_ndi.gaussian_filter(output, blur_size_px, output=output)
 
     # median filter
     if (medfilt_size_px is not None) and (medfilt_size_px > 0):
-        cu_ndi.median_filter(output, size = medfilt_size_px, output=output)
+        cu_ndi.median_filter(output, medfilt_size_px, output=output)
 
     return output
