@@ -3,6 +3,12 @@ from numpy.typing import NDArray
 import cv2
 from dataclasses import dataclass
 
+try:
+    import cupy as cp
+    from cupy.typing import NDArray as CuNDArray
+except:
+    print('No GPU available, cupy not imported')
+    
 @dataclass
 class Rect:
     left: int
