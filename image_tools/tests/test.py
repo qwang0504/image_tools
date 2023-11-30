@@ -44,16 +44,16 @@ print(f'bwareaopen, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cp
 ## bwareaclose --------------------------------------------------------------------------------------------
 t_cpu_ms = timeit.timeit('out = bwareaclose(ar)', globals=globals(), number=N)*1000/N
 t_gpu_ms = timeit.timeit('out = bwareaclose_GPU(cu_ar)', globals=globals(), number=N)*1000/N
-print(f'bwareaopen, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
+print(f'bwareaclose, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
 
 ## bwareafilter --------------------------------------------------------------------------------------------
 t_cpu_ms = timeit.timeit('out = bwareafilter(ar)', globals=globals(), number=N)*1000/N
 t_gpu_ms = timeit.timeit('out = bwareafilter_GPU(cu_ar)', globals=globals(), number=N)*1000/N
-print(f'bwareaopen, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
+print(f'bwareafilter, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
 
 ## bwareaopen_centroids --------------------------------------------------------------------------------------------
 t_cpu_ms = timeit.timeit('out = bwareaopen_centroids(ar)', globals=globals(), number=N)*1000/N
-t_gpu_ms = timeit.timeit('out = bwareafilter_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+t_gpu_ms = timeit.timeit('out = bwareaopen_centroids_GPU(cu_ar)', globals=globals(), number=N)*1000/N
 print(f'bwareaopen_centroids, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
 
 ## bwareafilter_centroids --------------------------------------------------------------------------------------------
