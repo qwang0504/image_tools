@@ -35,55 +35,143 @@ cu_ar = cp.asarray(ar)
 # number of repetitions
 N = 1000
 
+## array transfer
+t_transfert = timeit.timeit('cu_ar = cp.asarray(ar)', globals=globals(), number=N)*1000/N
+print(f'transfert time: {t_transfert:.3f}ms')
+
 ## component_size --------------------------------------------------------------------------------------------
 with cProfile.Profile() as pr:
     t_cpu_ms = timeit.timeit('(component_sz, ccs) = components_size(ar)', globals=globals(), number=N)*1000/N
-
     sortby = SortKey.TIME
     ps = pstats.Stats(pr).sort_stats(sortby)
     ps.print_stats(10)
 
-t_gpu_ms = timeit.timeit('(component_sz, ccs) = components_size_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+with cProfile.Profile() as pr:
+    t_gpu_ms = timeit.timeit('(component_sz, ccs) = components_size_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
 print(f'components_size, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
 
 ## bwareaopen --------------------------------------------------------------------------------------------
-t_cpu_ms = timeit.timeit('out = bwareaopen(ar)', globals=globals(), number=N)*1000/N
-t_gpu_ms = timeit.timeit('out = bwareaopen_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+with cProfile.Profile() as pr:
+    t_cpu_ms = timeit.timeit('out = bwareaopen(ar)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
+with cProfile.Profile() as pr:
+    t_gpu_ms = timeit.timeit('out = bwareaopen_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
 print(f'bwareaopen, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
 
 ## bwareaclose --------------------------------------------------------------------------------------------
-t_cpu_ms = timeit.timeit('out = bwareaclose(ar)', globals=globals(), number=N)*1000/N
-t_gpu_ms = timeit.timeit('out = bwareaclose_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+with cProfile.Profile() as pr:
+    t_cpu_ms = timeit.timeit('out = bwareaclose(ar)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
+with cProfile.Profile() as pr:
+    t_gpu_ms = timeit.timeit('out = bwareaclose_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
 print(f'bwareaclose, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
 
 ## bwareafilter --------------------------------------------------------------------------------------------
-t_cpu_ms = timeit.timeit('out = bwareafilter(ar)', globals=globals(), number=N)*1000/N
-t_gpu_ms = timeit.timeit('out = bwareafilter_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+with cProfile.Profile() as pr:
+    t_cpu_ms = timeit.timeit('out = bwareafilter(ar)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
+with cProfile.Profile() as pr:
+    t_gpu_ms = timeit.timeit('out = bwareafilter_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
 print(f'bwareafilter, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
 
 ## bwareaopen_centroids --------------------------------------------------------------------------------------------
-t_cpu_ms = timeit.timeit('out = bwareaopen_centroids(ar)', globals=globals(), number=N)*1000/N
-t_gpu_ms = timeit.timeit('out = bwareaopen_centroids_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+with cProfile.Profile() as pr:
+    t_cpu_ms = timeit.timeit('out = bwareaopen_centroids(ar)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
+with cProfile.Profile() as pr:
+    t_gpu_ms = timeit.timeit('out = bwareaopen_centroids_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
 print(f'bwareaopen_centroids, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
 
 ## bwareafilter_centroids --------------------------------------------------------------------------------------------
-t_cpu_ms = timeit.timeit('out = bwareafilter_centroids(ar)', globals=globals(), number=N)*1000/N
-t_gpu_ms = timeit.timeit('out = bwareafilter_centroids_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+with cProfile.Profile() as pr:
+    t_cpu_ms = timeit.timeit('out = bwareafilter_centroids(ar)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
+with cProfile.Profile() as pr:
+    t_gpu_ms = timeit.timeit('out = bwareafilter_centroids_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
 print(f'bwareafilter_centroids, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
 
 ## bwareaopen_props --------------------------------------------------------------------------------------------
-t_cpu_ms = timeit.timeit('out = bwareaopen_props(ar)', globals=globals(), number=N)*1000/N
-t_gpu_ms = timeit.timeit('out = bwareaopen_props_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+with cProfile.Profile() as pr:
+    t_cpu_ms = timeit.timeit('out = bwareaopen_props(ar)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
+with cProfile.Profile() as pr:
+    t_gpu_ms = timeit.timeit('out = bwareaopen_props_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
 print(f'bwareaopen_props, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
 
 ## bwareafilter_props --------------------------------------------------------------------------------------------
-t_cpu_ms = timeit.timeit('out = bwareafilter_props(ar)', globals=globals(), number=N)*1000/N
-t_gpu_ms = timeit.timeit('out = bwareafilter_props_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+with cProfile.Profile() as pr:
+    t_cpu_ms = timeit.timeit('out = bwareafilter_props(ar)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
+with cProfile.Profile() as pr:
+    t_gpu_ms = timeit.timeit('out = bwareafilter_props_GPU(cu_ar)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
 print(f'bwareafilter_props, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
 
 ## enhance --------------------------------------------------------------------------------------------------------
-N = 1
+N = 100
 
-t_cpu_ms = timeit.timeit('out = enhance(ar,contrast=1.4,gamma=0.5,brightness=0.2,blur_size_px=10,medfilt_size_px=10)', globals=globals(), number=N)*1000/N
-t_gpu_ms = timeit.timeit('out = enhance_GPU(cu_ar,contrast=1.4,gamma=0.5,brightness=0.2,blur_size_px=10,medfilt_size_px=10)', globals=globals(), number=N)*1000/N
+with cProfile.Profile() as pr:
+    t_cpu_ms = timeit.timeit('out = enhance(ar,contrast=1.4,gamma=0.5,brightness=0.2,blur_size_px=10,medfilt_size_px=10)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
+with cProfile.Profile() as pr:
+    t_gpu_ms = timeit.timeit('out = enhance_GPU(cu_ar,contrast=1.4,gamma=0.5,brightness=0.2,blur_size_px=10,medfilt_size_px=10)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
 print(f'enhance, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
