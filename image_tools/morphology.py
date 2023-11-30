@@ -42,7 +42,7 @@ def properties_GPU(
     ) -> list:
 
     label_img = label_GPU(ar, connectivity)
-    return regionprops(label_img)
+    return cu_regionprops(label_img)
 
 def components_size(
         ar: NDArray, 
