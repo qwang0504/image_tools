@@ -5,9 +5,13 @@ from scipy.signal import medfilt2d
 import cv2
 from .convert import im2single, im2single_GPU
 
-import cupy as cp
-from cupy.typing import NDArray as CuNDArray
-from cupyx.scipy import ndimage as cu_ndi
+try:
+    import cupy as cp
+    from cupy.typing import NDArray as CuNDArray
+    from cupyx.scipy import ndimage as cu_ndi
+except:
+    print('No GPU available, cupy not imported')
+
 
 # TODO this appears to be mostly single-threaded, profile it
 # NOTE median filter becomes prohibitively slow as kernel size increases

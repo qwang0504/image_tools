@@ -1,8 +1,11 @@
 import numpy as np
 from numpy.typing import NDArray
 
-import cupy as cp
-from cupy.typing import NDArray as CuNDArray
+try:
+    import cupy as cp
+    from cupy.typing import NDArray as CuNDArray
+except:
+    print('No GPU available, cupy not imported')
 
 def im2single(input_image: NDArray) -> NDArray:
     """

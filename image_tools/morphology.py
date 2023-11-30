@@ -4,10 +4,13 @@ from numpy.typing import NDArray
 from typing import Tuple, Optional
 from skimage.measure import regionprops
 
-import cupy as cp
-from cupy.typing import NDArray as CuNDArray
-from cupyx.scipy import ndimage as cu_ndi
-from cucim.skimage.measure import regionprops as cu_regionprops
+try:
+    import cupy as cp
+    from cupy.typing import NDArray as CuNDArray
+    from cupyx.scipy import ndimage as cu_ndi
+    from cucim.skimage.measure import regionprops as cu_regionprops
+except:
+    print('No GPU available, cupy not imported')
 
 # those are essentially stripped down versions of 
 # skimage.morphology.remove_small_objects
