@@ -1,6 +1,8 @@
 import numpy as np
 from numpy.typing import NDArray
 
+import cupy as cp
+from cupy.typing import NDArray as CuNDArray
 
 def im2single(input_image: NDArray) -> NDArray:
     """
@@ -18,6 +20,28 @@ def im2single(input_image: NDArray) -> NDArray:
 
     elif input_image.dtype == np.bool_:
         single_image = input_image.astype(np.float32) 
+
+    else:
+        raise ValueError('wrong image type, cannot convert to single')
+
+    return single_image
+
+def im2single_GPU(input_image: CuNDArray) -> CuNDArray:
+    """
+    Transform input image into a single precision floating point image
+    """
+
+    if cp.issubdtype(input_image.dtype, cp.integer):
+        # if integer type, transform to float and scale between 0 and 1
+        ui_info = cp.iinfo(input_image.dtype)
+        single_image = input_image.astype(cp.float32) / ui_info.max
+
+    elif cp.issubdtype(input_image.dtype, cp.floating):
+        # if already a floating type, convert to single precision
+        single_image = input_image.astype(cp.float32)
+
+    elif input_image.dtype == cp.bool_:
+        single_image = input_image.astype(cp.float32) 
 
     else:
         raise ValueError('wrong image type, cannot convert to single')

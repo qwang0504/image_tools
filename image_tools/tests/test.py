@@ -6,7 +6,8 @@ from image_tools import (
     bwareaopen_centroids, bwareaopen_centroids_GPU,
     bwareafilter_centroids, bwareafilter_centroids_GPU,
     bwareaopen_props, bwareaopen_props_GPU,
-    bwareafilter_props, bwareafilter_props_GPU
+    bwareafilter_props, bwareafilter_props_GPU,
+    enhance, enhance_GPU
 )
 import numpy as np
 import cupy as cp
@@ -70,3 +71,10 @@ print(f'bwareaopen_props, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup:
 t_cpu_ms = timeit.timeit('out = bwareafilter_props(ar)', globals=globals(), number=N)*1000/N
 t_gpu_ms = timeit.timeit('out = bwareafilter_props_GPU(cu_ar)', globals=globals(), number=N)*1000/N
 print(f'bwareafilter_props, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
+
+## enhance --------------------------------------------------------------------------------------------------------
+N = 100
+
+t_cpu_ms = timeit.timeit('out = enhance(ar,contrast=1.4,gamma=0.5,brightness=0.2,blur_size_px=50,medfilt_size_px=50)', globals=globals(), number=N)*1000/N
+t_gpu_ms = timeit.timeit('out = enhance_GPU(cu_ar,contrast=1.4,gamma=0.5,brightness=0.2,blur_size_px=50,medfilt_size_px=50)', globals=globals(), number=N)*1000/N
+print(f'enhance, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
