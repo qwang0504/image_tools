@@ -12,6 +12,9 @@ from image_tools import (
 import numpy as np
 import cupy as cp
 import timeit
+import cProfile
+import pstats
+from pstats import SortKey
 
 # dummy array creation
 SZ = 2048
@@ -33,7 +36,13 @@ cu_ar = cp.asarray(ar)
 N = 1000
 
 ## component_size --------------------------------------------------------------------------------------------
-t_cpu_ms = timeit.timeit('(component_sz, ccs) = components_size(ar)', globals=globals(), number=N)*1000/N
+with cProfile.Profile() as pr:
+    t_cpu_ms = timeit.timeit('(component_sz, ccs) = components_size(ar)', globals=globals(), number=N)*1000/N
+
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
 t_gpu_ms = timeit.timeit('(component_sz, ccs) = components_size_GPU(cu_ar)', globals=globals(), number=N)*1000/N
 print(f'components_size, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
 
