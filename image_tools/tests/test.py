@@ -16,6 +16,8 @@ import cProfile
 import pstats
 from pstats import SortKey
 
+# TODO: read that https://docs.cupy.dev/en/stable/user_guide/performance.html
+
 # dummy array creation
 SZ = 2048
 
