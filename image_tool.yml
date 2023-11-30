@@ -1,0 +1,14 @@
+name: image_tool
+channels:
+- conda-forge
+dependencies:
+  - python == 3.8.18
+  - pyqt
+  - pip
+  - numpy 
+  - scipy
+  - opencv
+  - scikit-image
+  - cupy
+  - pip:
+    - git+https://github.com/ElTinmar/geometry.git@main
