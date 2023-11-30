@@ -3,6 +3,7 @@ channels:
 - conda-forge
 dependencies:
   - python == 3.8.18
+  - ipython
   - pyqt
   - pip
   - numpy 
@@ -11,4 +12,5 @@ dependencies:
   - scikit-image
   - cupy
   - pip:
+    - git+https://github.com/ElTinmar/qt_widgets.git@main
     - git+https://github.com/ElTinmar/geometry.git@main

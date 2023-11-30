@@ -4,6 +4,10 @@ from numpy.typing import NDArray
 from typing import Tuple, Optional
 from skimage.measure import regionprops
 
+import cupy as cp
+from cupy.typing import NDArray as CuNDArray
+from cupyx.scipy import ndimage as cu_ndi
+
 # those are essentially stripped down versions of 
 # skimage.morphology.remove_small_objects
 
@@ -16,6 +20,17 @@ def components_size(
     ccs = np.zeros_like(ar, dtype=np.int32)
     ndi.label(ar, strel, output=ccs)
     component_sz = np.bincount(ccs.ravel()) 
+    return (component_sz, ccs)
+
+def components_size_GPU(
+        ar: CuNDArray, 
+        connectivity: int = 1
+        ) -> Tuple[CuNDArray, CuNDArray]:
+    
+    strel = cu_ndi.generate_binary_structure(ar.ndim, connectivity)
+    ccs = cp.zeros_like(ar, dtype=np.int32)
+    cu_ndi.label(ar, strel, output=ccs)
+    component_sz = cp.bincount(ccs.ravel()) 
     return (component_sz, ccs)
 
 def bwareaopen(
@@ -32,6 +47,20 @@ def bwareaopen(
 
     return out
 
+def bwareaopen_GPU(
+        ar: CuNDArray, 
+        min_size: int = 64, 
+        connectivity: int = 1
+        ) -> CuNDArray:
+    
+    out = ar.copy()
+    component_sz, ccs = components_size_GPU(ar, connectivity)
+    too_small = component_sz < min_size
+    too_small_mask = too_small[ccs]
+    out[too_small_mask] = 0
+
+    return out
+
 def bwareaclose(
         ar: NDArray, 
         max_size: int = 256, 
@@ -40,6 +69,20 @@ def bwareaclose(
     
     out = ar.copy()
     component_sz, ccs = components_size(ar, connectivity)
+    too_big = component_sz > max_size
+    too_big_mask = too_big[ccs]
+    out[too_big_mask] = 0
+
+    return out
+
+def bwareaclose_GPU(
+        ar: CuNDArray, 
+        max_size: int = 256, 
+        connectivity: int = 1
+        ) -> CuNDArray:
+    
+    out = ar.copy()
+    component_sz, ccs = components_size_GPU(ar, connectivity)
     too_big = component_sz > max_size
     too_big_mask = too_big[ccs]
     out[too_big_mask] = 0
