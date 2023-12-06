@@ -1,4 +1,4 @@
-name: image_tool
+name: image_tool_GPU
 channels:
 - conda-forge
 dependencies:
@@ -6,7 +6,7 @@ dependencies:
   - ipython
   - pyqt
   - pip
-  - numpy 
+  - numpy
   - scipy
   - opencv
   - scikit-image
