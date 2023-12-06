@@ -7,7 +7,8 @@ from image_tools import (
     bwareafilter_centroids, bwareafilter_centroids_GPU,
     bwareaopen_props, bwareaopen_props_GPU,
     bwareafilter_props, bwareafilter_props_GPU,
-    enhance, enhance_GPU
+    enhance, enhance_GPU,
+    imrotate, imrotate_GPU
 )
 import numpy as np
 import cupy as cp
@@ -177,3 +178,20 @@ with cProfile.Profile() as pr:
     ps.print_stats(10)
 
 print(f'enhance, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
+
+## imrotate
+N = 1000
+
+with cProfile.Profile() as pr:
+    t_cpu_ms = timeit.timeit('out = imrotate(ar,SZ//2,SZ//2,86.0)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
+with cProfile.Profile() as pr:
+    t_gpu_ms = timeit.timeit('out = imrotate_GPU(cu_ar,SZ//2,SZ//2,86.0)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
+print(f'imrotate, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')

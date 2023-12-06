@@ -2,6 +2,7 @@ import numpy as np
 from numpy.typing import NDArray
 import cv2
 from dataclasses import dataclass
+from .convert import cupy_array_to_GpuMat, GpuMat_to_cupy_array
 
 try:
     import cupy as cp
@@ -128,3 +129,30 @@ def imrotate(image: NDArray, cx: float, cy: float, angle_deg: float) -> NDArray:
 
     return rotated_image, new_coords
     
+
+def imrotate_GPU(image: CuNDArray, cx: float, cy: float, angle_deg: float) -> CuNDArray:
+
+    # create GpuMat from cupy ndarray
+    image_gpu = cupy_array_to_GpuMat(image)
+
+    # compute bounding box after rotation
+    imrect = Rect(cx, cy, image.shape[1], image.shape[0])
+    bb = bounding_box_after_rot(imrect, angle_deg)
+
+    # rotate and translate image
+    T0 = translation_matrix(-cx, -cy)
+    R = rotation_matrix(angle_deg)
+    T1 = translation_matrix(cx, cy)
+    T2 = translation_matrix(-bb.left, -bb.bottom)
+    warp_mat = T2 @ np.linalg.inv(T1 @ R @ T0)
+    rotated_image_gpu = cv2.cuda.warpAffine(
+        image_gpu, 
+        warp_mat[:2,:], 
+        (bb.width, bb.height), 
+        flags=cv2.INTER_NEAREST
+    )
+    
+    # new coordinates of the center of rotation
+    new_coords = np.array((cx - bb.left, cy - bb.bottom))
+
+    return GpuMat_to_cupy_array(rotated_image), new_coords
