@@ -10,6 +10,8 @@ try:
 except:
     print('No GPU available, cupy not imported')
     
+# TODO call this transformations and make it more general: crop, translate, resize, rotate, etc
+
 @dataclass
 class Rect:
     left: int
