@@ -179,8 +179,8 @@ with cProfile.Profile() as pr:
 
 print(f'enhance, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
 
-## imrotate
-N = 1000
+## imrotate --------------------------------------------------------------------------------------------------------
+N = 10000
 
 with cProfile.Profile() as pr:
     t_cpu_ms = timeit.timeit('out = imrotate(ar,SZ//2,SZ//2,86.0)', globals=globals(), number=N)*1000/N
@@ -195,3 +195,6 @@ with cProfile.Profile() as pr:
     ps.print_stats(10)
 
 print(f'imrotate, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
+
+out = imrotate(ar,SZ//2,SZ//2,86.0)
+out_gpu = imrotate_GPU(cu_ar,SZ//2,SZ//2,86.0)

@@ -34,9 +34,9 @@ def cupy_array_to_GpuMat(image: CuNDArray) -> cv2.cuda.GpuMat:
     
     if len(image.shape) > 3:
         raise ValueError('cupy_array_to_GpuMat::Image has too many dimensions, max 3')
-    else if len(image.shape) == 3:
+    elif len(image.shape) == 3:
         num_channels = image.shape[2]
-    else if len(image.shape) == 2:
+    elif len(image.shape) == 2:
         num_channels = 1
     else:
         raise ValueError('cupy_array_to_GpuMat::Image has too few dimensions, min 2')
@@ -52,13 +52,13 @@ def GpuMat_to_cupy_array(image: cv2.cuda.GpuMat) -> CuNDArray:
     sz = image.size()
     channels = image.channels()
     num_bytes = sz[0]*sz[1]*channels*image.elemSize()
-    mem = cupy.cuda.UnownedMemory(image.cudaPtr(), num_bytes, owner=None)
-    memptr = cupy.cuda.MemoryPointer(mem, offset=0)
+    mem = cp.cuda.UnownedMemory(image.cudaPtr(), num_bytes, owner=None)
+    memptr = cp.cuda.MemoryPointer(mem, offset=0)
     if channels > 1:
         arr_sz = (sz[0], sz[1], image.channels())
     else:
         arr_sz = sz
-    return cupy.ndarray(arr_sz, dtype=CVTYPE_TO_CUPY[image.type()], memptr=memptr)    
+    return cp.ndarray(arr_sz, dtype=CVTYPE_TO_CUPY[image.type()], memptr=memptr)    
 
 def im2single(input_image: NDArray) -> NDArray:
     """

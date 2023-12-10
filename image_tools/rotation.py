@@ -3,6 +3,7 @@ from numpy.typing import NDArray
 import cv2
 from dataclasses import dataclass
 from .convert import cupy_array_to_GpuMat, GpuMat_to_cupy_array
+from typing import Tuple
 
 try:
     import cupy as cp
@@ -108,7 +109,7 @@ def diagonal_crop(image: NDArray, rect: Rect, angle_deg: float) -> NDArray:
 
     return rotated_crop
 
-def imrotate(image: NDArray, cx: float, cy: float, angle_deg: float) -> NDArray:
+def imrotate(image: NDArray, cx: float, cy: float, angle_deg: float) -> Tuple[NDArray, NDArray]:
     # compute bounding box after rotation
     imrect = Rect(cx, cy, image.shape[1], image.shape[0])
     bb = bounding_box_after_rot(imrect, angle_deg)
@@ -132,7 +133,8 @@ def imrotate(image: NDArray, cx: float, cy: float, angle_deg: float) -> NDArray:
     return rotated_image, new_coords
     
 
-def imrotate_GPU(image: CuNDArray, cx: float, cy: float, angle_deg: float) -> CuNDArray:
+#def imrotate_GPU(image: CuNDArray, cx: float, cy: float, angle_deg: float) -> Tuple[CuNDArray, NDArray]:
+def imrotate_GPU(image: CuNDArray, cx: float, cy: float, angle_deg: float) -> Tuple[cv2.cuda.GpuMat, NDArray]:
 
     # create GpuMat from cupy ndarray
     image_gpu = cupy_array_to_GpuMat(image)
@@ -157,4 +159,8 @@ def imrotate_GPU(image: CuNDArray, cx: float, cy: float, angle_deg: float) -> Cu
     # new coordinates of the center of rotation
     new_coords = np.array((cx - bb.left, cy - bb.bottom))
 
-    return GpuMat_to_cupy_array(rotated_image_gpu), new_coords
+    #return GpuMat_to_cupy_array(rotated_image_gpu), new_coords
+    return rotated_image_gpu, new_coords
+
+# TODO I woudl like to return a cupy array but it looks like the pointers dies outside of 
+# the scope of the function
