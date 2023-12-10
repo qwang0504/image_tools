@@ -157,4 +157,4 @@ def imrotate_GPU(image: CuNDArray, cx: float, cy: float, angle_deg: float) -> Cu
     # new coordinates of the center of rotation
     new_coords = np.array((cx - bb.left, cy - bb.bottom))
 
-    return GpuMat_to_cupy_array(rotated_image), new_coords
+    return GpuMat_to_cupy_array(rotated_image_gpu), new_coords
