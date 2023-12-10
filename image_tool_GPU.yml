@@ -2,7 +2,7 @@ name: image_tool_GPU
 channels:
 - conda-forge
 dependencies:
-  - python == 3.8.18
+  - python == 3.8
   - ipython
   - pyqt
   - pip
@@ -11,9 +11,9 @@ dependencies:
   - scikit-image
   - cupy
   - pip:
+    - https://github.com/ElTinmar/build_opencv/raw/main/opencv_contrib_python_rolling-4.8.0.20231210-cp38-cp38-linux_x86_64.whl
     - cucim
     - git+https://github.com/ElTinmar/qt_widgets.git@main
     - git+https://github.com/ElTinmar/geometry.git@main
-    - https://github.com/ElTinmar/build_opencv/raw/main/opencv_contrib_python_rolling-4.8.0.20231210-cp38-cp38-linux_x86_64.whl
 
 
