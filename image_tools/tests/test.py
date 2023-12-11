@@ -8,10 +8,12 @@ from image_tools import (
     bwareaopen_props, bwareaopen_props_GPU,
     bwareafilter_props, bwareafilter_props_GPU,
     enhance, enhance_GPU,
-    imrotate, imrotate_GPU
+    imrotate, imrotate_GPU,
+    cupy_array_to_GpuMat, GpuMat_to_cupy_array
 )
 import numpy as np
 import cupy as cp
+import cv2
 import timeit
 import cProfile
 import pstats
@@ -198,3 +200,39 @@ print(f'imrotate, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_
 
 out = imrotate(ar,SZ//2,SZ//2,86.0)
 out_gpu = imrotate_GPU(cu_ar,SZ//2,SZ//2,86.0)
+
+
+# I have a problem
+
+image_gpu = cupy_array_to_GpuMat(cu_ar)
+new_image_gpu = cv2.cuda.warpAffine(
+    image_gpu,
+    np.array([
+        [1.0,0.0,0.0],
+        [0.0,1.0,0.0]
+    ]),
+    cu_ar.shape, 
+    flags=cv2.INTER_NEAREST
+)
+cu_res = GpuMat_to_cupy_array(new_image_gpu) 
+print(cu_res)
+
+def myfun(cu_ar):
+    # that works outside the function but fails inside,
+    # maybe because the reference is not valid outside the
+    # scope of the function
+    image_gpu = cupy_array_to_GpuMat(cu_ar)
+    new_image_gpu = cv2.cuda.warpAffine(
+        image_gpu,
+        np.array([
+            [1.0,0.0,0.0],
+            [0.0,1.0,0.0]
+        ]),
+        cu_ar.shape, 
+        flags=cv2.INTER_NEAREST
+    )
+    cu_res = GpuMat_to_cupy_array(new_image_gpu) 
+    return cu_res
+
+out_problem = myfun(cu_ar)
+print(out_problem)
