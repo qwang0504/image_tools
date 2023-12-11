@@ -70,44 +70,6 @@ def bounding_box_after_rot(rect: Rect, angle_deg: float) -> Rect:
     bb_height = bb_top-bb_bottom
 
     return Rect(int(bb_left), int(bb_bottom), int(bb_width), int(bb_height))
-        
-def diagonal_crop(image: NDArray, rect: Rect, angle_deg: float) -> NDArray:
-    # compute bounding box after rotation
-    imrect = Rect(rect.left, rect.bottom, image.shape[1], image.shape[0])
-    bb = bounding_box_after_rot(imrect, angle_deg)
-
-    # rotate and translate image
-    T0 = translation_matrix(-rect.left, -rect.bottom)
-    R = rotation_matrix(angle_deg)
-    T1 = translation_matrix(rect.left, rect.bottom)
-    T2 = translation_matrix(-bb.left, -bb.bottom)
-    warp_mat = T2 @ np.linalg.inv(T1 @ R @ T0)
-    rotated_image = cv2.warpAffine(image, warp_mat[:2,:], (bb.width, bb.height), flags=cv2.INTER_NEAREST)
-    
-    # crop rotated image        
-    left = rect.left - bb.left
-    bottom = rect.bottom - bb.bottom
-    right = left + rect.width
-    top = bottom + rect.height
-
-    crop_bottom = max(0, bottom)
-    crop_left = max(0, left)
-    crop_top = min(top, rotated_image.shape[0])
-    crop_right = min(right, rotated_image.shape[1])
-    rotated_crop = rotated_image[crop_bottom:crop_top, crop_left:crop_right]
-
-    # pad image if necessary 
-    if left < 0: 
-        pad_h = (-left, left + rect.width - rotated_crop.shape[1])
-    else:
-        pad_h = (0, rect.width - rotated_crop.shape[1])
-    if bottom < 0:
-        pad_v = (-bottom, bottom + rect.height - rotated_crop.shape[0])
-    else:
-        pad_v = (0, rect.height - rotated_crop.shape[0])
-    rotated_crop = np.pad(rotated_crop,(pad_v,pad_h), constant_values=0)
-
-    return rotated_crop
 
 def imrotate(image: NDArray, cx: float, cy: float, angle_deg: float) -> Tuple[NDArray, NDArray]:
     # compute bounding box after rotation
