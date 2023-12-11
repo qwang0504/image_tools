@@ -17,4 +17,7 @@ setup(
         "geometry @ git+https://github.com/ElTinmar/geometry.git@main",
         "qt_widgets @ git+https://github.com/ElTinmar/qt_widgets.git@main"
     ]
+    extras_require = {
+        'gpu': ["cupy"]
+    }
 )
