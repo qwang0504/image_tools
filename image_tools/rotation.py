@@ -87,6 +87,9 @@ def imrotate(image: NDArray, cx: float, cy: float, angle_deg: float) -> Tuple[ND
 
     return rotated_image, new_coords
     
+# TODO maybe I would like imrotate_GPU to take and return cupy array
+# but for now I have issue keeping the memory alive when I create a 
+# cupy array from GpuMat inside a function
 def imrotate_GPU(image: cv2.cuda.GpuMat, cx: float, cy: float, angle_deg: float) -> Tuple[cv2.cuda.GpuMat, NDArray]:
 
     w, h = image.size()
