@@ -11,7 +11,7 @@ setup(
     install_requires=[
         "numpy", 
         "scipy",
-        "https://github.com/ElTinmar/build_opencv/raw/main/opencv_contrib_python_rolling-4.8.0.20231210-cp38-cp38-linux_x86_64.whl",
+        "opencv-contrib-python-rolling @ https://github.com/ElTinmar/build_opencv/raw/main/opencv_contrib_python_rolling-4.8.0.20231210-cp38-cp38-linux_x86_64.whl",
         "scikit-image",
         "PyQt5",
         "geometry @ git+https://github.com/ElTinmar/geometry.git@main",
