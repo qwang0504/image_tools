@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name='image_tools',
     author='Martin Privat',
-    version='0.2.0',
+    version='0.2.1',
     packages=['image_tools','image_tools.tests'],
     license='Creative Commons Attribution-Noncommercial-Share Alike license',
     description='image processing functions',
