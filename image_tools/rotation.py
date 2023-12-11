@@ -2,14 +2,7 @@ import numpy as np
 from numpy.typing import NDArray
 import cv2
 from dataclasses import dataclass
-from .convert import cupy_array_to_GpuMat, GpuMat_to_cupy_array
 from typing import Tuple
-
-try:
-    import cupy as cp
-    from cupy.typing import NDArray as CuNDArray
-except:
-    print('No GPU available, cupy not imported')
     
 # TODO call this transformations and make it more general: crop, translate, resize, rotate, etc
 
@@ -94,14 +87,12 @@ def imrotate(image: NDArray, cx: float, cy: float, angle_deg: float) -> Tuple[ND
 
     return rotated_image, new_coords
     
-def imrotate_GPU(image: CuNDArray, cx: float, cy: float, angle_deg: float) -> Tuple[CuNDArray, NDArray]:
-#def imrotate_GPU(image: CuNDArray, cx: float, cy: float, angle_deg: float) -> Tuple[cv2.cuda.GpuMat, NDArray]:
+def imrotate_GPU(image: cv2.cuda.GpuMat, cx: float, cy: float, angle_deg: float) -> Tuple[cv2.cuda.GpuMat, NDArray]:
 
-    # create GpuMat from cupy ndarray
-    image_gpu = cupy_array_to_GpuMat(image)
-
+    w, h = image.size()
+    
     # compute bounding box after rotation
-    imrect = Rect(cx, cy, image.shape[1], image.shape[0])
+    imrect = Rect(cx, cy, w, h)
     bb = bounding_box_after_rot(imrect, angle_deg)
 
     # rotate and translate image
@@ -111,7 +102,7 @@ def imrotate_GPU(image: CuNDArray, cx: float, cy: float, angle_deg: float) -> Tu
     T2 = translation_matrix(-bb.left, -bb.bottom)
     warp_mat = T2 @ np.linalg.inv(T1 @ R @ T0)
     rotated_image_gpu = cv2.cuda.warpAffine(
-        image_gpu, 
+        image, 
         warp_mat[:2,:], 
         (bb.width, bb.height), 
         flags=cv2.INTER_NEAREST
@@ -120,8 +111,5 @@ def imrotate_GPU(image: CuNDArray, cx: float, cy: float, angle_deg: float) -> Tu
     # new coordinates of the center of rotation
     new_coords = np.array((cx - bb.left, cy - bb.bottom))
 
-    return GpuMat_to_cupy_array(rotated_image_gpu), new_coords
-    #return rotated_image_gpu, new_coords
+    return rotated_image_gpu, new_coords
 
-# TODO I woudl like to return a cupy array but it looks like the pointers dies outside of 
-# the scope of the function

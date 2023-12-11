@@ -34,8 +34,11 @@ for x0, y0, r in zip(X0, Y0, R):
     circle = (X - x0)**2 + (Y - y0)**2 <= r**2
     ar[circle] = 1
 
-# GPU array
+# Cupy array
 cu_ar = cp.asarray(ar)
+
+# GpuMat
+cu_gpu = cupy_array_to_GpuMat(cu_ar)
 
 # number of repetitions
 N = 1000
@@ -191,48 +194,9 @@ with cProfile.Profile() as pr:
     ps.print_stats(10)
 
 with cProfile.Profile() as pr:
-    t_gpu_ms = timeit.timeit('out = imrotate_GPU(cu_ar,SZ//2,SZ//2,86.0)', globals=globals(), number=N)*1000/N
+    t_gpu_ms = timeit.timeit('out = imrotate_GPU(cu_gpu,SZ//2,SZ//2,86.0)', globals=globals(), number=N)*1000/N
     sortby = SortKey.TIME
     ps = pstats.Stats(pr).sort_stats(sortby)
     ps.print_stats(10)
 
 print(f'imrotate, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
-
-out = imrotate(ar,SZ//2,SZ//2,86.0)
-out_gpu = imrotate_GPU(cu_ar,SZ//2,SZ//2,86.0)
-
-
-# I have a problem
-
-image_gpu = cupy_array_to_GpuMat(cu_ar)
-new_image_gpu = cv2.cuda.warpAffine(
-    image_gpu,
-    np.array([
-        [1.0,0.0,0.0],
-        [0.0,1.0,0.0]
-    ]),
-    cu_ar.shape, 
-    flags=cv2.INTER_NEAREST
-)
-cu_res = GpuMat_to_cupy_array(new_image_gpu) 
-print(cu_res)
-
-def myfun(cu_ar):
-    # that works outside the function but fails inside,
-    # maybe because the reference is not valid outside the
-    # scope of the function
-    image_gpu = cupy_array_to_GpuMat(cu_ar)
-    new_image_gpu = cv2.cuda.warpAffine(
-        image_gpu,
-        np.array([
-            [1.0,0.0,0.0],
-            [0.0,1.0,0.0]
-        ]),
-        cu_ar.shape, 
-        flags=cv2.INTER_NEAREST
-    )
-    cu_res = GpuMat_to_cupy_array(new_image_gpu) 
-    return cu_res
-
-out_problem = myfun(cu_ar)
-print(out_problem)
