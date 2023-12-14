@@ -5,3 +5,11 @@ from .convert import *
 from .rotation import *
 from .morphology import *
 from .roi_selector_widget import *
+
+try:
+    from .enhance_gpu import *
+    from .convert_gpu import *
+    from .rotation_gpu import *
+    from .morphology_gpu import *
+except:
+    print('No GPU available')
