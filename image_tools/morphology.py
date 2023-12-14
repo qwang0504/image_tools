@@ -273,7 +273,7 @@ def bwareafilter_props(
     return filtered_props
 
 def bwareafilter_props_GPU(
-        ar: NDArray, 
+        ar: CuNDArray, 
         min_size: int = 64, 
         max_size: int = 256, 
         min_length: Optional[int] = None,
