@@ -19,6 +19,6 @@ setup(
         "qt_widgets @ git+https://github.com/ElTinmar/qt_widgets.git@main"
     ],
     extras_require = {
-        'gpu': ["cupy"]
+        'gpu': ["cupy", "cucim"]
     }
 )
