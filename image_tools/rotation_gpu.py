@@ -1,15 +1,17 @@
 import numpy as np
-from numpy.typing import NDArray
 import cv2
 from typing import Tuple
 from .rotation import Rect, rotation_matrix, translation_matrix, bounding_box_after_rot
+import cupy as cp
+from cupy.typing import NDArray as CuNDArray
+
 # TODO call this transformations and make it more general: crop, translate, resize, rotate, etc
 
     
 # TODO maybe I would like imrotate_GPU to take and return cupy array
 # but for now I have issue keeping the memory alive when I create a 
 # cupy array from GpuMat inside a function
-def imrotate_GPU(image: cv2.cuda.GpuMat, cx: float, cy: float, angle_deg: float) -> Tuple[cv2.cuda.GpuMat, NDArray]:
+def imrotate_GPU(image: cv2.cuda.GpuMat, cx: float, cy: float, angle_deg: float) -> Tuple[cv2.cuda.GpuMat, CuNDArray]:
 
     w, h = image.size()
     
@@ -31,7 +33,7 @@ def imrotate_GPU(image: cv2.cuda.GpuMat, cx: float, cy: float, angle_deg: float)
     )
     
     # new coordinates of the center of rotation
-    new_coords = np.array((cx - bb.left, cy - bb.bottom))
+    new_coords = cp.array((cx - bb.left, cy - bb.bottom))
 
     return rotated_image_gpu, new_coords
 
