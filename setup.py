@@ -14,7 +14,7 @@ setup(
         "scipy",
         "opencv-contrib-python-rolling @ https://github.com/ElTinmar/build_opencv/raw/main/opencv_contrib_python_rolling-4.8.0.20231215-cp39-cp39-linux_x86_64.whl",
         "scikit-image",
-        "PyQt5 = 5.15.3",
+        "PyQt5 == 5.15.3",
         "geometry @ git+https://github.com/ElTinmar/geometry.git@main",
         "qt_widgets @ git+https://github.com/ElTinmar/qt_widgets.git@main"
     ],
