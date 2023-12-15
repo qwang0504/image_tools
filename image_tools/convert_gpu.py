@@ -37,9 +37,9 @@ def cupy_array_to_GpuMat(image: CuNDArray) -> cv2.cuda.GpuMat:
         raise ValueError('cupy_array_to_GpuMat::Image has too few dimensions, min 2')
 
     return cv2.cuda.createGpuMatFromCudaMemory(
-        image.shape, 
+        image.__cuda_array_interface__['shape'], 
         cv2.CV_MAKETYPE(CUPY_TO_CVTYPE[image.dtype], num_channels), 
-        image.data.ptr
+        image.__cuda_array_interface__['data'][0]
     )
 
 def GpuMat_to_cupy_array(image: cv2.cuda.GpuMat) -> CuNDArray:
