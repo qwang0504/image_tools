@@ -36,11 +36,14 @@ def cupy_array_to_GpuMat(image: CuNDArray) -> cv2.cuda.GpuMat:
     else:
         raise ValueError('cupy_array_to_GpuMat::Image has too few dimensions, min 2')
 
-    return cv2.cuda.createGpuMatFromCudaMemory(
+    gpu_mat = cv2.cuda.createGpuMatFromCudaMemory(
         image.__cuda_array_interface__['shape'], 
         cv2.CV_MAKETYPE(CUPY_TO_CVTYPE[image.dtype], num_channels), 
         image.__cuda_array_interface__['data'][0]
     )
+    # this creates a continuous matrix,, which I don't want (problem with warpaffine).
+    # copying on device seems to get rid of that. That should have a moderate impact on performance  
+    return gpu_mat.copyTo()
 
 def GpuMat_to_cupy_array(image: cv2.cuda.GpuMat) -> CuNDArray:
 
