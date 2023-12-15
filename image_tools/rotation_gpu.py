@@ -29,7 +29,7 @@ def imrotate_GPU(image: cv2.cuda.GpuMat, cx: float, cy: float, angle_deg: float)
     cv2.cuda.warpAffine(
         src=image, 
         dst=rotated_image_gpu,
-        M=warp_mat[:2,:], 
+        M=warp_mat, 
         dsize=(bb.width, bb.height), 
         flags=cv2.INTER_NEAREST
     )
