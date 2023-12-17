@@ -14,7 +14,7 @@ setup(
         "scipy",
         "opencv-contrib-python",
         "scikit-image",
-        "PyQt5 == 5.15.3",
+        "PyQt5",
         "geometry @ git+https://github.com/ElTinmar/geometry.git@main",
         "qt_widgets @ git+https://github.com/ElTinmar/qt_widgets.git@main"
     ],
