@@ -12,7 +12,7 @@ setup(
     install_requires=[
         "numpy", 
         "scipy",
-        "opencv-contrib-python",
+        "opencv-python",
         "scikit-image",
         "PyQt5",
         "geometry @ git+https://github.com/ElTinmar/geometry.git@main",
