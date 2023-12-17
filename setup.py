@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='image_tools',
-    python_requires='>=3.9,<3.10',
+    python_requires='>=3.8,<3.10',
     author='Martin Privat',
     version='0.2.10',
     packages=['image_tools','image_tools.tests'],
@@ -12,7 +12,7 @@ setup(
     install_requires=[
         "numpy", 
         "scipy",
-        "opencv-contrib-python-rolling @ https://github.com/ElTinmar/build_opencv/raw/main/opencv_contrib_python_rolling-4.8.0.20231215-cp39-cp39-linux_x86_64.whl",
+        "opencv-contrib-python",
         "scikit-image",
         "PyQt5 == 5.15.3",
         "geometry @ git+https://github.com/ElTinmar/geometry.git@main",
