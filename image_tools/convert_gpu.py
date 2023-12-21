@@ -30,32 +30,35 @@ def cupy_array_to_GpuMat(image: CuNDArray) -> cv2.cuda.GpuMat:
     if len(image.shape) > 3:
         raise ValueError('cupy_array_to_GpuMat::Image has too many dimensions, max 3')
     elif len(image.shape) == 3:
-        num_channels = image.shape[2]
+        h, w, num_channels = image.shape
     elif len(image.shape) == 2:
+        h, w = image.shape
         num_channels = 1
     else:
         raise ValueError('cupy_array_to_GpuMat::Image has too few dimensions, min 2')
 
     gpu_mat = cv2.cuda.createGpuMatFromCudaMemory(
-        image.shape[1::-1], 
+        (w*num_channels, h), 
         cv2.CV_MAKETYPE(CUPY_TO_CVTYPE[image.dtype], num_channels), 
         image.data.ptr
     )
     # this creates a continuous matrix,, which I don't want (problem with warpaffine).
-    # copying on device seems to get rid of that. That should have a moderate impact on performance  
-    return gpu_mat.copyTo()
+    # copying on device seems to get rid of that. That should have a moderate impact on performance
+    gpu_noncontinuous = gpu_mat.copyTo()
+  
+    return gpu_noncontinuous
 
 def GpuMat_to_cupy_array(image: cv2.cuda.GpuMat) -> CuNDArray:
 
-    sz = image.size()
+    w, h = image.size()
     channels = image.channels()
-    num_bytes = sz[0]*sz[1]*channels*image.elemSize()
+    num_bytes = w*h*channels*image.elemSize()
     mem = cp.cuda.UnownedMemory(image.cudaPtr(), num_bytes, owner=None)
     memptr = cp.cuda.MemoryPointer(mem, offset=0)
     if channels > 1:
-        arr_sz = (sz[1], sz[0], image.channels())
+        arr_sz = (h, w, image.channels())
     else:
-        arr_sz = (sz[1], sz[0])
+        arr_sz = (h, w)
     return cp.ndarray(arr_sz, dtype=CVTYPE_TO_CUPY[image.type()], memptr=memptr)    
 
 def im2single_GPU(input_image: CuNDArray) -> CuNDArray:
