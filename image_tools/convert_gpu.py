@@ -42,7 +42,7 @@ def cupy_array_to_GpuMat(image: CuNDArray) -> cv2.cuda.GpuMat:
         cv2.CV_MAKETYPE(CUPY_TO_CVTYPE[image.dtype], num_channels), 
         image.data.ptr
     )
-    # this creates a continuous matrix,, which I don't want (problem with warpaffine).
+    # this creates a continuous matrix, which I don't want (problem with warpaffine).
     # copying on device seems to get rid of that. That should have a moderate impact on performance
     gpu_noncontinuous = gpu_mat.copyTo()
   
