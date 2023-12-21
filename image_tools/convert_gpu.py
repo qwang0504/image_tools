@@ -8,8 +8,8 @@ CUPY_TO_CVTYPE = {
     cp.dtype('int8'): cv2.CV_8S,
     cp.dtype('uint16'): cv2.CV_16U,
     cp.dtype('int16'): cv2.CV_16S,
-    cp.dtype('float16'): cv2.CV_16F,
     cp.dtype('int32'): cv2.CV_32S, 
+    cp.dtype('float16'): cv2.CV_16F,
     cp.dtype('float32'): cv2.CV_32F,
     cp.dtype('float64'): cv2.CV_64F,
 }
@@ -19,8 +19,8 @@ CVTYPE_TO_CUPY = {
     cv2.CV_8S: cp.dtype('int8'),
     cv2.CV_16U: cp.dtype('uint16'),
     cv2.CV_16S: cp.dtype('int16'),
-    cv2.CV_16F: cp.dtype('float16'),
     cv2.CV_32S: cp.dtype('int32'), 
+    cv2.CV_16F: cp.dtype('float16'),
     cv2.CV_32F: cp.dtype('float32'),
     cv2.CV_64F: cp.dtype('float64'),
 }
