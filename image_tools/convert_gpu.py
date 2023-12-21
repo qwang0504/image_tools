@@ -53,9 +53,9 @@ def GpuMat_to_cupy_array(image: cv2.cuda.GpuMat) -> CuNDArray:
     mem = cp.cuda.UnownedMemory(image.cudaPtr(), num_bytes, owner=None)
     memptr = cp.cuda.MemoryPointer(mem, offset=0)
     if channels > 1:
-        arr_sz = (sz[0], sz[1], image.channels())
+        arr_sz = (sz[1], sz[0], image.channels())
     else:
-        arr_sz = sz
+        arr_sz = (sz[1], sz[0])
     return cp.ndarray(arr_sz, dtype=CVTYPE_TO_CUPY[image.type()], memptr=memptr)    
 
 def im2single_GPU(input_image: CuNDArray) -> CuNDArray:
