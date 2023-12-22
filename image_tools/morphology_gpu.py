@@ -133,7 +133,6 @@ def bwareafilter_props_GPU(
     ) -> list:
 
     props = properties_GPU(ar, connectivity)
-    print(props)
     filtered_props = []
     for blob in props:
         if not (min_size < blob.area < max_size):
@@ -145,4 +144,5 @@ def bwareafilter_props_GPU(
             if not (min_length < 2*blob.axis_major_length < max_length):
                 continue
         filtered_props.append(blob)
+    print(props[0], filtered_props)
     return filtered_props
