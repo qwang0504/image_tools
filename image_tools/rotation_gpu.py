@@ -43,7 +43,7 @@ def imrotate_GPU(image: cv2.cuda.GpuMat, cx: float, cy: float, angle_deg: float)
 
 def imrotate_GPU_cucim(image: CuNDArray, cx: float, cy: float, angle_deg: float) -> Tuple[CuNDArray, CuNDArray]:
 
-    w, h = image.size()
+    w, h = image.shape()
     
     # compute bounding box after rotation
     imrect = Rect(cx, cy, w, h)

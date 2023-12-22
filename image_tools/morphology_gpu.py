@@ -144,11 +144,4 @@ def bwareafilter_props_GPU(
             if not (min_length < 2*blob.axis_major_length < max_length):
                 continue
         filtered_props.append(blob)
-    print([
-            (min_size, props[0].area, max_size),
-            (min_width, 2*props[0].axis_minor_length, max_width),
-            (min_length, 2*props[0].axis_major_length, max_length)
-        ],
-        filtered_props
-    )
     return filtered_props
