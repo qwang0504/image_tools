@@ -53,7 +53,7 @@ def imrotate_GPU_cucim(image: CuNDArray, cx: float, cy: float, angle_deg: float)
     R = rotation_matrix(angle_deg)
     T1 = translation_matrix(cx, cy)
     T2 = translation_matrix(-bb.left, -bb.bottom)
-    warp_mat = T2 @ cp.linalg.inv(T1 @ R @ T0)
+    warp_mat = T2 @ np.linalg.inv(T1 @ R @ T0)
     tform = transform.AffineTransform(matrix=warp_mat)
     rotated_image = transform.warp(image, inverse_map=tform, order=0)
     
