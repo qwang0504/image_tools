@@ -4,6 +4,7 @@ from typing import Tuple
 from .rotation import Rect, rotation_matrix, translation_matrix, bounding_box_after_rot
 import cupy as cp
 from cupy.typing import NDArray as CuNDArray
+from cucim.skimage import transform
 
 # TODO call this transformations and make it more general: crop, translate, resize, rotate, etc
 
@@ -39,3 +40,25 @@ def imrotate_GPU(image: cv2.cuda.GpuMat, cx: float, cy: float, angle_deg: float)
 
     return rotated_image_gpu, new_coords
 
+
+def imrotate_GPU_cucim(image: CuNDArray, cx: float, cy: float, angle_deg: float) -> Tuple[CuNDArray, CuNDArray]:
+
+    w, h = image.size()
+    
+    # compute bounding box after rotation
+    imrect = Rect(cx, cy, w, h)
+    bb = bounding_box_after_rot(imrect, angle_deg)
+
+    # rotate and translate image
+    T0 = translation_matrix(-cx, -cy)
+    R = rotation_matrix(angle_deg)
+    T1 = translation_matrix(cx, cy)
+    T2 = translation_matrix(-bb.left, -bb.bottom)
+    warp_mat = T2 @ cp.linalg.inv(T1 @ R @ T0)
+    tform = transform.AffineTransform(matrix=warp_mat)
+    rotated_image = transform.warp(image, inverse_map=tform, order=0)
+    
+    # new coordinates of the center of rotation
+    new_coords = cp.array((cx - bb.left, cy - bb.bottom))
+
+    return rotated_image, new_coords

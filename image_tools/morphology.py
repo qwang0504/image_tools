@@ -4,7 +4,6 @@ from numpy.typing import NDArray
 from typing import Tuple, Optional
 from skimage.measure import regionprops
 
-
 # those are essentially stripped down versions of 
 # skimage.morphology.remove_small_objects
 
