@@ -5,7 +5,6 @@ from cupy.typing import NDArray as CuNDArray
 from cupyx.scipy import ndimage as cu_ndi
 from cucim.skimage.measure import regionprops as cu_regionprops
 
-
 def label_GPU(        
         ar: CuNDArray, 
         connectivity: int = 1
@@ -25,7 +24,7 @@ def properties_GPU(
 def components_size_GPU(
         ar: CuNDArray, 
         connectivity: int = 1
-        ) -> Tuple[CuNDArray, CuNDArray]:
+    ) -> Tuple[CuNDArray, CuNDArray]:
     
     ccs = label_GPU(ar, connectivity)
     component_sz = cp.bincount(ccs.ravel()) 
@@ -35,7 +34,7 @@ def bwareaopen_GPU(
         ar: CuNDArray, 
         min_size: int = 64, 
         connectivity: int = 1
-        ) -> CuNDArray:
+    ) -> CuNDArray:
     
     out = ar.copy()
     component_sz, ccs = components_size_GPU(ar, connectivity)
@@ -49,7 +48,7 @@ def bwareaclose_GPU(
         ar: CuNDArray, 
         max_size: int = 256, 
         connectivity: int = 1
-        ) -> CuNDArray:
+    ) -> CuNDArray:
     
     out = ar.copy()
     component_sz, ccs = components_size_GPU(ar, connectivity)
@@ -64,7 +63,7 @@ def bwareafilter_GPU(
         min_size: int = 64, 
         max_size: int = 256, 
         connectivity: int = 1
-        ) -> CuNDArray:
+    ) -> CuNDArray:
     
     out = ar.copy()
     component_sz, ccs = components_size_GPU(ar, connectivity)
@@ -134,6 +133,7 @@ def bwareafilter_props_GPU(
     ) -> list:
 
     props = properties_GPU(ar, connectivity)
+    print(props)
     filtered_props = []
     for blob in props:
         if not (min_size < blob.area < max_size):
