@@ -48,15 +48,14 @@ def imrotate_GPU_cucim(image: CuNDArray, cx: float, cy: float, angle_deg: float)
     imrect = Rect(cx, cy, w, h)
     bb = bounding_box_after_rot(imrect, angle_deg)
 
-    # rotate and translate image
-    T0 = translation_matrix(-cx, -cy)
-    R = rotation_matrix(angle_deg)
-    T1 = translation_matrix(cx, cy)
-    T2 = translation_matrix(-bb.left, -bb.bottom)
-    warp_mat = T2 @ np.linalg.inv(T1 @ R @ T0)
-    tform = transform.AffineTransform(matrix=cp.asarray(warp_mat))
-    rotated_image = transform.warp(image, inverse_map=tform.inverse, order=0)
-    
+    # NOTE performance is bad compared to cv2 warpAffine
+    rotated_image = transform.rotate(
+        image=image,
+        angle=angle_deg,
+        resize=True,
+        center=(cx,cy)
+    )
+
     # new coordinates of the center of rotation
     new_coords = cp.array((cx - bb.left, cy - bb.bottom))
 

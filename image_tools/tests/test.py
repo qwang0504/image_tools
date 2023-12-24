@@ -8,7 +8,7 @@ from image_tools import (
     bwareaopen_props, bwareaopen_props_GPU,
     bwareafilter_props, bwareafilter_props_GPU,
     enhance, enhance_GPU,
-    imrotate, imrotate_GPU,
+    imrotate, imrotate_GPU, imrotate_GPU_cucim,
     cupy_array_to_GpuMat, GpuMat_to_cupy_array
 )
 import numpy as np
@@ -199,4 +199,11 @@ with cProfile.Profile() as pr:
     ps = pstats.Stats(pr).sort_stats(sortby)
     ps.print_stats(10)
 
+with cProfile.Profile() as pr:
+    t_gpu2_ms = timeit.timeit('out = imrotate_GPU_cucim(cu_ar,SZ//2,SZ//2,86.0)', globals=globals(), number=N)*1000/N
+    sortby = SortKey.TIME
+    ps = pstats.Stats(pr).sort_stats(sortby)
+    ps.print_stats(10)
+
 print(f'imrotate, CPU: {t_cpu_ms:.3f}ms, GPU: {t_gpu_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu_ms:.3f}X')
+print(f'imrotate, CPU: {t_cpu_ms:.3f}ms, GPU cucim: {t_gpu2_ms:.3f}ms, speedup: {t_cpu_ms/t_gpu2_ms:.3f}X')
