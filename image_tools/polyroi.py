@@ -33,7 +33,7 @@ def polyroi(img: NDArray) -> NDArray:
     #cv2.setMouseCallback('image', click_event)
     cv2.imshow('image', local_image) 
     cv2.waitKey(0) 
-    cv2.destroyWindow('image') 
+    #cv2.destroyWindow('image') 
 
     coords = [(0,0),(0,10),(10,10)]
     
