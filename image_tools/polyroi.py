@@ -17,7 +17,7 @@ def polyroi(img: NDArray) -> NDArray:
             coords.append((x,y))
     
         # checking for right mouse clicks      
-        if event==cv2.EVENT_RBUTTONDOWN: 
+        if event == cv2.EVENT_RBUTTONDOWN: 
             coords.pop()
 
         pts = np.array(coords, np.int32)
@@ -30,7 +30,7 @@ def polyroi(img: NDArray) -> NDArray:
         cv2.imshow('image', local_image) 
 
     cv2.namedWindow('image')
-    cv2.setMouseCallback('image', click_event)
+    #cv2.setMouseCallback('image', click_event)
     cv2.imshow('image', local_image) 
     cv2.waitKey(0) 
     cv2.destroyWindow('image') 
@@ -39,8 +39,7 @@ def polyroi(img: NDArray) -> NDArray:
 
 def polymask(img: NDArray) -> NDArray:
     mask = np.zeros_like(img)
-    #coords = polyroi(img)
-    coords = np.array([(0,0),(10,10),(10,0),(10,10)], dtype=np.int32)
+    coords = polyroi(img)
     mask_RGB = cv2.fillPoly(mask, [coords], 255)
     return im2gray(mask_RGB).astype(np.uint8)
 
