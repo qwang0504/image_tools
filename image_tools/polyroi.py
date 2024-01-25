@@ -39,7 +39,8 @@ def polyroi(img: NDArray) -> NDArray:
 
 def polymask(img: NDArray) -> NDArray:
     mask = np.zeros_like(img)
-    coords = polyroi(img)
+    #coords = polyroi(img)
+    coords = np.array([(0,0),(10,10),(10,0),(10,10)], dtype=np.int32)
     mask_RGB = cv2.fillPoly(mask, [coords], 255)
     return im2gray(mask_RGB).astype(np.uint8)
 
