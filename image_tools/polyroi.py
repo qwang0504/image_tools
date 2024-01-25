@@ -27,13 +27,13 @@ def polyroi(img: NDArray) -> NDArray:
         # so I make a copy
         original = img_rgb.copy() 
         local_image = cv2.polylines(original, [pts], True, (0, 0, 255), 1)
-        cv2.imshow('image', local_image) 
+        cv2.imshow('select roi', local_image) 
 
-    cv2.namedWindow('image')
-    cv2.setMouseCallback('image', click_event)
-    cv2.imshow('image', local_image) 
+    cv2.namedWindow('select roi')
+    cv2.setMouseCallback('select roi', click_event)
+    cv2.imshow('select roi', local_image) 
     cv2.waitKey(0) 
-    cv2.destroyWindow('image') 
+    cv2.destroyWindow('select roi') 
     
     return np.array(coords, np.int32)
 
