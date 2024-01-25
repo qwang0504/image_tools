@@ -10,7 +10,7 @@ def polyroi(img: NDArray) -> NDArray:
     coords = []
 
     def click_event(event, x, y, flags, params): 
-        nonlocal coords, local_image, img
+        nonlocal coords, local_image, img_rgb
 
         # checking for left mouse clicks 
         if event == cv2.EVENT_LBUTTONDOWN: 
