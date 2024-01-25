@@ -39,5 +39,5 @@ def polymask(img: NDArray) -> NDArray:
     mask = np.zeros_like(img)
     coords = polyroi(img)
     mask_RGB = cv2.fillPoly(mask, [coords], 255)
-    return im2gray(mask_RGB)
+    return im2gray(mask_RGB).astype(np.uint8)
 
