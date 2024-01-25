@@ -1,11 +1,12 @@
 import cv2
 from numpy.typing import NDArray
 import numpy as np
-from .convert import im2gray
+from .convert import im2gray, im2rgb
 
 def polyroi(img: NDArray) -> NDArray:
 
-    local_image = img.copy()
+    img_rgb = im2rgb(img)
+    local_image = img_rgb.copy()
     coords = []
 
     def click_event(event, x, y, flags, params): 
@@ -24,7 +25,7 @@ def polyroi(img: NDArray) -> NDArray:
         
         # it looks like cv2.polylines modifies input inplace
         # so I make a copy
-        original = img.copy() 
+        original = img_rgb.copy() 
         local_image = cv2.polylines(original, [pts], True, (0, 0, 255), 2)
         cv2.imshow('image', local_image) 
 
