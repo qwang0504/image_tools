@@ -26,7 +26,7 @@ def polyroi(img: NDArray) -> NDArray:
         # it looks like cv2.polylines modifies input inplace
         # so I make a copy
         original = img_rgb.copy() 
-        local_image = cv2.polylines(original, [pts], True, (0, 0, 255), 2)
+        local_image = cv2.polylines(original, [pts], True, (0, 0, 255), 1)
         cv2.imshow('image', local_image) 
 
     cv2.imshow('image', local_image) 
