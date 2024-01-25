@@ -5,6 +5,7 @@ from .convert import *
 from .rotation import *
 from .morphology import *
 from .roi_selector_widget import *
+from .polyroi import *
 
 try:
     from .enhance_gpu import *
