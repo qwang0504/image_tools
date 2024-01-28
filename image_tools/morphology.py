@@ -147,3 +147,9 @@ def bwareafilter_props(
                 continue
         filtered_props.append(blob)
     return filtered_props
+
+# TODO test the following:
+#def pixelcount(regionmask):
+#    return np.sum(regionmask)
+
+#props = regionprops(label_img, extra_properties=(pixelcount,))
