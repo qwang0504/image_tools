@@ -1,8 +1,9 @@
 import numpy as np
 from scipy import ndimage as ndi
 from numpy.typing import NDArray
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List
 from skimage.measure import regionprops
+from skimage.measure._regionprops import _RegionProperties
 
 # those are essentially stripped down versions of 
 # skimage.morphology.remove_small_objects
@@ -18,7 +19,7 @@ def label(
 def properties(
         ar: NDArray, 
         connectivity: int = 1
-    ) -> list:
+    ) -> List[_RegionProperties]:
 
     label_img = label(ar, connectivity)
     return regionprops(label_img)
