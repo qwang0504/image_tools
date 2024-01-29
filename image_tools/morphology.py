@@ -21,7 +21,7 @@ def properties(
     ) -> list:
 
     label_img = label(ar, connectivity)
-    return regionprops(label_img, cache=False)
+    return regionprops(label_img)
 
 def components_size(
         ar: NDArray, 
