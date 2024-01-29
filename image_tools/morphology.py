@@ -105,10 +105,10 @@ def bwareafilter_centroids(
     for blob in props:
         if not (min_size < blob.area < max_size):
             continue
-        if (min_width is not None) and (max_width is not None):
+        if (min_width is not None) and (max_width is not None) and (max_width > 0):
             if not (min_width < 2*blob.axis_minor_length < max_width):
                 continue
-        if (min_length is not None) and (max_length is not None):
+        if (min_length is not None) and (max_length is not None)  and (max_length > 0):
             if not (min_length < 2*blob.axis_major_length < max_length):
                 continue
         y, x = blob.centroid
@@ -140,10 +140,10 @@ def bwareafilter_props(
     for blob in props:
         if not (min_size < blob.area < max_size):
             continue
-        if (min_width is not None) and (max_width is not None):
+        if (min_width is not None) and (max_width is not None) and (max_width > 0):
             if not (min_width < 2*blob.axis_minor_length < max_width):
                 continue
-        if (min_length is not None) and (max_length is not None):
+        if (min_length is not None) and (max_length is not None) and (max_length > 0):
             if not (min_length < 2*blob.axis_major_length < max_length):
                 continue
         filtered_props.append(blob)
