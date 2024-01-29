@@ -7,6 +7,10 @@ from skimage.measure import regionprops
 # those are essentially stripped down versions of 
 # skimage.morphology.remove_small_objects
 
+def pixelcount(regionmask):
+    '''faster than querying area'''
+    return np.sum(regionmask)
+
 def label(        
         ar: NDArray, 
         connectivity: int = 1
@@ -21,7 +25,7 @@ def properties(
     ) -> list:
 
     label_img = label(ar, connectivity)
-    return regionprops(label_img)
+    return regionprops(label_img, extra_properties=(pixelcount,))
 
 def components_size(
         ar: NDArray, 
@@ -137,7 +141,7 @@ def bwareafilter_props(
     props = properties(ar, connectivity)
     filtered_props = []
     for blob in props:
-        if not (min_size < blob.area < max_size):
+        if not (min_size < blob.pixelcount < max_size):
             continue
         if (min_width is not None) and (max_width is not None):
             if not (min_width < 2*blob.axis_minor_length < max_width):
@@ -148,8 +152,3 @@ def bwareafilter_props(
         filtered_props.append(blob)
     return filtered_props
 
-# TODO test the following:
-#def pixelcount(regionmask):
-#    return np.sum(regionmask)
-
-#props = regionprops(label_img, extra_properties=(pixelcount,))
