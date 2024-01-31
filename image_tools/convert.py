@@ -14,7 +14,6 @@ def im2single(input_image: NDArray) -> NDArray:
     elif np.issubdtype(input_image.dtype, np.floating):
         # if already a floating type, convert to single precision
         if input_image.dtype == np.float32:
-            print('doing nothing')
             return input_image
         
         single_image = input_image.astype(np.float32)
@@ -39,6 +38,9 @@ def im2double(input_image: NDArray) -> NDArray:
 
     elif np.issubdtype(input_image.dtype, np.floating):
         # if already a floating type, convert to double precision
+        if input_image.dtype == np.float64:
+            return input_image
+        
         double_image = input_image.astype(np.float64)
 
     elif input_image.dtype == np.bool_:
@@ -53,6 +55,9 @@ def im2uint8(input_image: NDArray) -> NDArray:
     '''Convert image to uint8. Note that this is slow for large images'''
     
     if np.issubdtype(input_image.dtype, np.integer):
+        if input_image.dtype == np.uint8:
+            return input_image
+        
         ui_info = np.iinfo(input_image.dtype)
         uint8_image = (input_image *  255.0/ui_info.max).astype(np.uint8)
 
