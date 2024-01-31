@@ -13,7 +13,10 @@ def im2single(input_image: NDArray) -> NDArray:
 
     elif np.issubdtype(input_image.dtype, np.floating):
         # if already a floating type, convert to single precision
-        single_image = input_image.astype(np.float32)
+        if input_image.dtype == np.float32:
+            return input_image
+        else:
+            single_image = input_image.astype(np.float32)
 
     elif input_image.dtype == np.bool_:
         single_image = input_image.astype(np.float32) 
@@ -35,7 +38,10 @@ def im2double(input_image: NDArray) -> NDArray:
 
     elif np.issubdtype(input_image.dtype, np.floating):
         # if already a floating type, convert to double precision
-        double_image = input_image.astype(np.float64)
+        if input_image.dtype == np.float64:
+            return input_image
+        else:
+            double_image = input_image.astype(np.float64)
 
     elif input_image.dtype == np.bool_:
         double_image = input_image.astype(np.float64) 
