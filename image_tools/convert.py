@@ -52,7 +52,8 @@ def im2double(input_image: NDArray) -> NDArray:
     return double_image
 
 def im2uint8(input_image: NDArray) -> NDArray:
-
+    '''Convert image to uint8. Note that this is slow for large images'''
+    
     if np.issubdtype(input_image.dtype, np.integer):
         ui_info = np.iinfo(input_image.dtype)
         uint8_image = (input_image *  255.0/ui_info.max).astype(np.uint8)
