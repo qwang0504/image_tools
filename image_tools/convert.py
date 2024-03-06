@@ -89,9 +89,9 @@ def im2gray(input_image: NDArray) -> NDArray:
         # already grayscale, nothing to do
         return input_image
     
-    if len(shp) == 3:
+    if len(shp) >= 3:
         # M x N X C
-        return input_image[:,:,0]
+        return np.dot(input_image[...,:3], [0.2990, 0.5870, 0.1140])
     
     else:
         raise ValueError('wrong image type, cannot convert to grayscale')
