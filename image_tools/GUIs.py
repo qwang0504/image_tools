@@ -451,13 +451,14 @@ class DrawPolyMask(ImageViewer):
     def __init__(self, image: np.ndarray, *args, **kwargs) -> None:
 
         self.masks = {}
+
+        super().__init__(image, *args, **kwargs)
+
         self.ID = -1
         self.current_polygon = []
         self.pen = QPen(Qt.red)
         self.setMouseTracking(True)
-
-        super().__init__(image, *args, **kwargs)
-
+        
     def set_ID(self, ID: int):
 
         self.ID = ID
