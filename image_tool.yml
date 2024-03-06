@@ -10,6 +10,7 @@ dependencies:
   - scipy
   - opencv
   - scikit-image
+  - pyqtgraph
   - pip:
     - git+https://github.com/ElTinmar/qt_widgets.git@main
     - git+https://github.com/ElTinmar/geometry.git@main

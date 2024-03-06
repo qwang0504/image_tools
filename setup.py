@@ -4,7 +4,7 @@ setup(
     name='image_tools',
     python_requires='>=3.8',
     author='Martin Privat',
-    version='0.3.1',
+    version='0.3.2',
     packages=['image_tools','image_tools.tests'],
     license='Creative Commons Attribution-Noncommercial-Share Alike license',
     description='image processing functions',
@@ -12,9 +12,10 @@ setup(
     install_requires=[
         "numpy", 
         "scipy",
+        "PyQt5",
+        "pyqtgraph",
         "opencv-python",
         "scikit-image",
-        "PyQt5",
         "geometry @ git+https://github.com/ElTinmar/geometry.git@main",
         "qt_widgets @ git+https://github.com/ElTinmar/qt_widgets.git@main"
     ],
