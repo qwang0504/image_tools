@@ -458,17 +458,33 @@ class DrawPolyMask(ImageViewer):
         self.current_polygon = []
         self.pen = QPen(Qt.red)
         self.setMouseTracking(True)
+
+    def get_current_polygon(self) -> list:
+        return self.current_polygon
+    
+    def set_current_polygon(self, polygon: list) -> None:
+        self.current_polygon = polygon
+
+    def get_masks(self) -> dict:
+        return self.masks
+
+    def set_masks(self, masks: dict) -> None:
+        self.masks = masks
+
+    def get_ID(self) -> int:
+        return self.ID
         
     def set_ID(self, ID: int):
-
         self.ID = ID
 
-    def set_image(self, image: np.ndarray):
+    def get_image(self) -> np.ndarray:
+        return self.image
 
+    def set_image(self, image: np.ndarray):
         super().set_image(image)
         self.update_pixmap()
         
-    def update_pixmap(self):
+    def update_pixmap(self) -> None:
 
         self.im_display = im2single(self.image.copy())
 
@@ -483,7 +499,6 @@ class DrawPolyMask(ImageViewer):
         self.pixmap_item.setPixmap(NDarray_to_QPixmap(im2uint8(self.im_display)))
     
     def get_image_size(self):
-        
         return self.image.shape[:2]
 
     def mousePressEvent(self, event):
