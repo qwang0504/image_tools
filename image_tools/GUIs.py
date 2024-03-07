@@ -540,7 +540,7 @@ class DrawPolyMask(ImageViewer):
                 # store mask
                 coords = [[pt.x(), pt.y()] for pt in self.current_polygon]
                 coords = np.array(coords, dtype = np.int32)
-                mask = np.zeros_like(self.image, dtype=np.float32)
+                mask = np.zeros_like(self.image, dtype=np.uint8)
                 mask_RGB = cv2.fillPoly(mask, [coords], 255)
                 mask_gray = im2single(mask_RGB[:,:,0])
                 show_mask = True
