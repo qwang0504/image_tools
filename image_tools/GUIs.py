@@ -23,7 +23,7 @@ class ImageWidget(Protocol):
         ...
 
 
-class ImageViewer(QGraphicsView):
+class ImageViewer(QWidget):
 
     ZOOM_FACTOR = 0.1 
 
@@ -31,12 +31,13 @@ class ImageViewer(QGraphicsView):
 
         super().__init__(*args, **kwargs)
 
+        self.view = QGraphicsView()
         self.scene = QGraphicsScene()
         self.pixmap_item = self.scene.addPixmap(QPixmap())
-        self.setScene(self.scene)
+        self.view.setScene(self.scene)
         self.set_image(image)
         self.layout = QHBoxLayout(self)
-        self.layout.addWidget(self.scene)
+        self.layout.addWidget(self.view)
 
     def set_image(self, image: np.ndarray):
 
