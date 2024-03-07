@@ -7,6 +7,7 @@ from .morphology import *
 from .roi_selector_widget import *
 from .polyroi import *
 from .GUIs import *
+from .polygons import *
 
 try:
     from .enhance_gpu import *
