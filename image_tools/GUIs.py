@@ -35,6 +35,8 @@ class ImageViewer(QGraphicsView):
         self.pixmap_item = self.scene.addPixmap(QPixmap())
         self.setScene(self.scene)
         self.set_image(image)
+        self.layout = QHBoxLayout(self)
+        self.layout.addWidget(self.scene)
 
     def set_image(self, image: np.ndarray):
 
