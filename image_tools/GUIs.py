@@ -39,7 +39,7 @@ class ImageViewer(QGraphicsView):
     def set_image(self, image: np.ndarray):
 
         self.image = im2rgb(im2uint8(image))
-        self.pixmap_item.setPixmap(NDarray_to_QPixmap(self.image))
+        #self.pixmap_item.setPixmap(NDarray_to_QPixmap(self.image))
 
     def get_image(self) -> np.ndarray:
         
@@ -482,7 +482,7 @@ class DrawPolyMask(ImageViewer):
 
     def set_image(self, image: np.ndarray):
         super().set_image(image)
-        #self.update_pixmap()
+        self.update_pixmap()
         
     def update_pixmap(self) -> None:
 
