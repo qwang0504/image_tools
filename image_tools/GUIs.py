@@ -481,7 +481,7 @@ class DrawPolyMask(ImageViewer):
         return self.image
 
     def set_image(self, image: np.ndarray):
-        super().set_image(image)
+        #super().set_image(image)
         self.update_pixmap()
         
     def update_pixmap(self) -> None:
