@@ -545,6 +545,7 @@ class DrawPolyMask(ImageViewer):
                 mask_gray = im2single(mask_RGB[:,:,0])
                 show_mask = True
                 self.masks[key] = (show_mask, mask_gray)
+                print(f'{np.sum(mask_gray)}/{np.prod(mask_gray.shape[:2])}')
 
                 # reset current polygon
                 self.current_polygon = []
