@@ -75,7 +75,7 @@ def im2uint8(input_image: NDArray) -> NDArray:
 
     return uint8_image
    
-def im2gray(input_image: NDArray) -> NDArray:
+def rgb2gray(input_image: NDArray) -> NDArray:
     """
     Transform color input into grayscale by taking only the first channel
 
@@ -95,6 +95,29 @@ def im2gray(input_image: NDArray) -> NDArray:
     if len(shp) >= 3:
         # M x N X C
         return np.dot(input_image[...,:3], [0.2990, 0.5870, 0.1140])
+    
+    else:
+        raise ValueError('wrong image type, cannot convert to grayscale')
+
+def im2gray(input_image: NDArray) -> NDArray:
+    """
+    Transform color input into grayscale by taking only the first channel
+
+    Inputs:
+        input_image: M x N x C | M x N x C x K numpy array 
+
+    Outputs:
+        M x N | M x N x K numpy array 
+    """
+
+    shp = input_image.shape
+
+    if len(shp) == 2:
+        # already grayscale, nothing to do
+        return input_image
+    
+    if len(shp) >= 3:
+        return input_image[...,0]
     
     else:
         raise ValueError('wrong image type, cannot convert to grayscale')
