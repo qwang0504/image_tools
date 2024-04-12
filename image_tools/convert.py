@@ -3,7 +3,8 @@ from numpy.typing import NDArray
 
 def im2single(input_image: NDArray) -> NDArray:
     """
-    Transform input image into a single precision floating point image
+    Transform input image into a single precision floating point image.
+    Note that this is slow for large images
     """
 
     if np.issubdtype(input_image.dtype, np.integer):
