@@ -9,17 +9,20 @@ def im2single(input_image: NDArray) -> NDArray:
     if np.issubdtype(input_image.dtype, np.integer):
         # if integer type, transform to float and scale between 0 and 1
         ui_info = np.iinfo(input_image.dtype)
-        single_image = input_image.astype(np.float32) / ui_info.max
+        #single_image = input_image.astype(np.float32) / ui_info.max
+        single_image = np.float32(input_image) / ui_info.max
 
     elif np.issubdtype(input_image.dtype, np.floating):
         # if already a floating type, convert to single precision
         if input_image.dtype == np.float32:
             return input_image
         
-        single_image = input_image.astype(np.float32)
+        #single_image = input_image.astype(np.float32)
+        single_image = np.float32(input_image)
 
     elif input_image.dtype == np.bool_:
-        single_image = input_image.astype(np.float32) 
+        #single_image = input_image.astype(np.float32)
+        single_image = np.float32(input_image) 
 
     else:
         raise ValueError('wrong image type, cannot convert to single')
