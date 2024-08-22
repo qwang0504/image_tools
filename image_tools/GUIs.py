@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (
     QGraphicsLineItem
 )
 from PyQt5.QtCore import pyqtSignal, Qt, QRectF, QPoint, QPointF, QLineF
-from PyQt5.QtGui import QBrush, QPen, QFont, QPixmap
+from PyQt5.QtGui import QBrush, QPen, QFont, QPixmap, QPainter
 from qt_widgets import NDarray_to_QPixmap, LabeledSliderDoubleSpinBox, LabeledSliderSpinBox
 import pyqtgraph as pg
 
@@ -444,6 +444,111 @@ class Enhance(QWidget):
         else:
             self.channel.setEnabled(True)
 
+class FishInfo(ImageViewer):
+    '''
+    Click on fish to get centroid/main axis
+    '''
+
+    def __init__(self, image: np.ndarray, *args, **kwargs) -> None:
+
+        super().__init__(image, *args, **kwargs)
+        self.setMouseTracking(True)
+
+        self.centroid = None
+        self.main_axis = None
+        self.current_stage = 'centroid'
+        self.pending_pen = QPen(Qt.red, 5)
+        self.preview_pen = QPen(Qt.red, 2)
+        self.accepted_pen = QPen(Qt.green, 5)
+
+        self.current_point = QGraphicsEllipseItem(-1,-1,1,1)
+        self.current_point.setPen(self.pending_pen)
+        self.scene.addItem(self.current_point)
+
+        self.current_line = QGraphicsLineItem(-1,-1,-1,-1)
+        self.current_line.setPen(self.pending_pen)
+        self.scene.addItem(self.current_line)
+
+        self.setWindowTitle('Left-click to select centroid. Right-click to validate')
+    
+    def get_data(self) -> dict:
+        # PyQt (0,0) is topleft
+        centroid = np.array([self.centroid.x(), self.centroid.y()])
+        main_axis = np.array([self.main_axis.x(), self.main_axis.y()]) 
+        main_axis = main_axis/np.linalg.norm(main_axis)
+        second_axis = np.array([-main_axis[1], main_axis[0]])
+        heading = np.hstack((main_axis[:,np.newaxis], second_axis[:,np.newaxis]))
+
+        res = {}
+        res['centroid'] = centroid.tolist()
+        res['heading'] = heading.tolist()
+        return res
+
+    def mousePressEvent(self, event):
+
+        widget_pos = event.pos()
+        scene_pos = self.mapToScene(widget_pos)
+
+        if self.current_stage == 'centroid':
+
+            if event.button() == Qt.LeftButton:
+                '''place centroid'''
+
+                self.centroid = scene_pos
+                self.current_point.setRect(scene_pos.x(),scene_pos.y(),1,1)
+
+            if event.button() == Qt.RightButton:
+                '''validate point and go to next stage'''
+
+                self.current_point.setPen(self.accepted_pen)
+
+                # add preview line
+                line = QLineF(self.centroid, self.centroid)
+                self.preview_line = QGraphicsLineItem(line)
+                self.preview_line.setPen(self.preview_pen)
+                self.scene.addItem(self.preview_line)
+
+                self.current_line.setLine(line)
+
+                self.current_stage = 'main axis'
+                self.setWindowTitle('Left-click to select main axis. Right-click to validate')
+
+        elif self.current_stage == 'main axis':
+
+            # left-click adds a new point
+            if event.button() == Qt.LeftButton:
+                '''place main direction'''
+                
+                self.main_axis = scene_pos - self.centroid
+                line = self.current_line.line()
+                line.setP2(scene_pos)
+                self.current_line.setLine(line)
+                
+            # right-click 
+            if event.button() == Qt.RightButton:
+                '''validate point and go to next stage'''
+                
+                self.current_line.setPen(self.accepted_pen)
+                self.scene.removeItem(self.preview_line)
+
+                self.current_stage = 'left eye'
+                self.close()
+
+        elif self.current_stage == 'left eye':
+            #TODO
+            pass  
+
+    def mouseMoveEvent(self, event):
+
+        widget_pos = event.pos()
+        scene_pos = self.mapToScene(widget_pos)
+
+        if self.current_stage == 'main axis':
+
+            line = self.preview_line.line()
+            line.setP2(scene_pos)
+            self.preview_line.setLine(line)    
+    
 class DrawPolyMask(ImageViewer):
 
     mask_drawn = pyqtSignal(int, int, np.ndarray)
