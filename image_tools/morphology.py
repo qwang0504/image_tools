@@ -152,7 +152,7 @@ def bwareafilter_props(
     return filtered_props
 
 def bwareafilter_centroids_cv2(
-        ar: NDArray, 
+        ar: cv2.UMat, 
         min_size: int = 64, 
         max_size: int = 256, 
         min_length: Optional[int] = None,
@@ -189,7 +189,7 @@ class RegionPropsLike:
     coords: NDArray
     
 def bwareafilter_props_cv2(
-        ar: NDArray, 
+        ar: cv2.UMat, 
         min_size: int = 64, 
         max_size: int = 256, 
         min_length: Optional[int] = None,
@@ -223,7 +223,7 @@ def bwareafilter_props_cv2(
     return kept_blobs
 
 def bwareafilter_cv2(
-        ar: NDArray, 
+        ar: cv2.UMat,
         min_size: int = 64, 
         max_size: int = 256, 
         connectivity: int = 4
@@ -234,11 +234,10 @@ def bwareafilter_cv2(
         connectivity = connectivity,
         ltype = cv2.CV_16U
     )
-    out = ar.copy()
     for c in range(1, n_components):
         area = stats[c, cv2.CC_STAT_AREA]
         keep_area = area > min_size and area < max_size
         if not keep_area:
-            out[labels == c] = 0
+            ar[labels == c] = 0
 
-    return out
+    return ar
