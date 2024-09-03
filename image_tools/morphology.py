@@ -171,7 +171,7 @@ def bwareafilter_centroids_cv2(
         ltype = cv2.CV_16U
     )
     kept_centroids = []
-    for c in range(1,n_components):
+    for c in range(1, n_components):
         w = stats[c, cv2.CC_STAT_WIDTH]
         h = stats[c, cv2.CC_STAT_HEIGHT]
         area = stats[c, cv2.CC_STAT_AREA]
@@ -181,7 +181,7 @@ def bwareafilter_centroids_cv2(
         if all((keep_width, keep_height, keep_area)):
             kept_centroids.append(centroids[c])
 
-    return np.asarray(centroids, dtype=np.float32)
+    return np.asarray(kept_centroids, dtype=np.float32)
 
 @dataclass
 class RegionPropsLike:
