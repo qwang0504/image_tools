@@ -175,8 +175,8 @@ def bwareafilter_centroids_cv2(
         w = stats[c, cv2.CC_STAT_WIDTH]
         h = stats[c, cv2.CC_STAT_HEIGHT]
         area = stats[c, cv2.CC_STAT_AREA]
-        keep_width = (min_width is None) or (max_width is None) or (w > min_width and w < max_width)
-        keep_height = (min_length is None) or (max_length is None) or (h > min_length and h < max_length)
+        keep_width = (max_width == 0) or (min_width is None) or (max_width is None) or (w > min_width and w < max_width)
+        keep_height = (max_length == 0) or (min_length is None) or (max_length is None) or (h > min_length and h < max_length)
         keep_area = area > min_size and area < max_size
         if all((keep_width, keep_height, keep_area)):
             kept_centroids.append(centroids[c])
@@ -210,8 +210,8 @@ def bwareafilter_props_cv2(
         w = stats[c, cv2.CC_STAT_WIDTH]
         h = stats[c, cv2.CC_STAT_HEIGHT]
         area = stats[c, cv2.CC_STAT_AREA]
-        keep_width = (min_width is None) or (max_width is None) or (w > min_width and w < max_width)
-        keep_height = (min_length is None) or (max_length is None) or (h > min_length and h < max_length)
+        keep_width = (max_width == 0) or (min_width is None) or (max_width is None) or (w > min_width and w < max_width)
+        keep_height = (max_length == 0) or (min_length is None) or (max_length is None) or (h > min_length and h < max_length)
         keep_area = area > min_size and area < max_size
         if all((keep_width, keep_height, keep_area)):
             blob = RegionPropsLike(
