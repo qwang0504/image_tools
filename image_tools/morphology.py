@@ -151,7 +151,7 @@ def bwareafilter_props(
         filtered_props.append(blob)
     return filtered_props
 
-def bwareafilter_centroid_cv2(
+def bwareafilter_centroids_cv2(
         ar: NDArray, 
         min_size: int = 64, 
         max_size: int = 256, 
