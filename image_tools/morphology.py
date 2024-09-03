@@ -121,7 +121,7 @@ def bwareaopen_props(
         ar: NDArray, 
         min_size: int = 64, 
         connectivity: int = 1
-    ) -> list:
+    ) -> List:
 
     props = properties(ar, connectivity)
     return [blob for blob in props if blob.area > min_size]
@@ -135,7 +135,7 @@ def bwareafilter_props(
         min_width: Optional[int] = None,
         max_width: Optional[int] = None,
         connectivity: int = 1
-    ) -> list:
+    ) -> List[_RegionProperties]:
 
     props = properties(ar, connectivity)
     filtered_props = []
@@ -197,7 +197,7 @@ def bwareafilter_props_cv2(
         min_width: Optional[int] = None,
         max_width: Optional[int] = None,
         connectivity: int = 4
-    ) -> list[RegionPropsLike]:
+    ) -> List[RegionPropsLike]:
     # return list of blobs, where blobs have centroid and coords
 
     n_components, labels, stats, centroids = cv2.connectedComponentsWithStats(
