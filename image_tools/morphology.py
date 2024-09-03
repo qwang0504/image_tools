@@ -116,38 +116,6 @@ def bwareafilter_centroids(
         centroids.append([x, y])
     return np.asarray(centroids, dtype=np.float32)
 
-def bwareafilter_centroid_cv2(
-        ar: NDArray, 
-        min_size: int = 64, 
-        max_size: int = 256, 
-        min_length: Optional[int] = None,
-        max_length: Optional[int] = None,
-        min_width: Optional[int] = None,
-        max_width: Optional[int] = None,
-        connectivity: int = 4
-    ):
-    # note that width and length are not treated equivalently to bwareafilter_centroids
-    # here it is the width and height of the bounding box instead of minor and major axis
-
-    n_components, labels, stats, centroids = cv2.connectedComponentsWithStats(
-        ar,
-        connectivity = connectivity,
-        cv2.CV_32S
-    )
-    kept_centroids = []
-    for c in range(n_components):
-        if not (min_size < stats[c, cv2.CC_STAT_AREA] < max_size):
-            continue
-        if (min_width is not None) and (max_width is not None) and (max_width > 0):
-            if not (min_width < stats[c, cv2.CC_STAT_WIDTH] < max_width):
-                continue
-        if (min_length is not None) and (max_length is not None)  and (max_length > 0):
-            if not (min_length < stats[i, cv2.CC_STAT_HEIGHT]< max_length):
-                continue
-        kept_centroids.append(centroids[c])
-        
-    return np.asarray(centroids, dtype=np.float32)
-
 def bwareaopen_props(
         ar: NDArray, 
         min_size: int = 64, 
@@ -182,3 +150,88 @@ def bwareafilter_props(
         filtered_props.append(blob)
     return filtered_props
 
+def bwareafilter_centroid_cv2(
+        ar: NDArray, 
+        min_size: int = 64, 
+        max_size: int = 256, 
+        min_length: Optional[int] = None,
+        max_length: Optional[int] = None,
+        min_width: Optional[int] = None,
+        max_width: Optional[int] = None,
+        connectivity: int = 4
+    ):
+    # note that width and length are not treated equivalently to bwareafilter_centroids
+    # here it is the width and height of the bounding box instead of minor and major axis
+    # TODO handle None
+
+    n_components, labels, stats, centroids = cv2.connectedComponentsWithStats(
+        ar,
+        connectivity = connectivity,
+        cv2.CV_32S
+    )
+    kept_centroids = []
+    for c in range(1,n_components):
+        w = stats[c, cv2.CC_STAT_WIDTH]
+        h = stats[c, cv2.CC_STAT_HEIGHT]
+        area = stats[c, cv2.CC_STAT_AREA]
+        keep_width = (min_width is None) or (max_width is None) or (w > min_width and w < max_width)
+        keep_height = (min_length is None) or (max_length is None) or (h > min_length and h < max_length)
+        keep_area = area > min_size and area < max_size
+        if all((keep_width, keep_height, keep_area)):
+            kept_centroids.append(centroids[c])
+
+    return np.asarray(centroids, dtype=np.float32)
+
+def bwareafilter_props_cv2(
+        ar: NDArray, 
+        min_size: int = 64, 
+        max_size: int = 256, 
+        min_length: Optional[int] = None,
+        max_length: Optional[int] = None,
+        min_width: Optional[int] = None,
+        max_width: Optional[int] = None,
+        connectivity: int = 4
+    ) -> list:
+    # return list of blobs, where blobs have centroid and coords
+
+    n_components, labels, stats, centroids = cv2.connectedComponentsWithStats(
+        ar,
+        connectivity = connectivity,
+        cv2.CV_32S
+    )
+    kept_blobs = []
+    for c in range(1,n_components):
+        w = stats[c, cv2.CC_STAT_WIDTH]
+        h = stats[c, cv2.CC_STAT_HEIGHT]
+        area = stats[c, cv2.CC_STAT_AREA]
+        keep_width = (min_width is None) or (max_width is None) or (w > min_width and w < max_width)
+        keep_height = (min_length is None) or (max_length is None) or (h > min_length and h < max_length)
+        keep_area = area > min_size and area < max_size
+        if all((keep_width, keep_height, keep_area)):
+            # blob.centroid
+            # blob.coords
+            kept_blobs.append(centroids[c])
+
+    return kept_blobs
+
+
+def bwareafilter_cv2(
+        ar: NDArray, 
+        min_size: int = 64, 
+        max_size: int = 256, 
+        connectivity: int = 4
+        ) -> NDArray:
+    
+    n_components, labels, stats, centroids = cv2.connectedComponentsWithStats(
+        ar,
+        connectivity = connectivity,
+        cv2.CV_32S
+    )
+    out = ar.copy()
+    for c in range(1, n_components):
+        area = stats[c, cv2.CC_STAT_AREA]
+        keep_area = area > min_size and area < max_size
+        if not keep_area:
+            out[labels == c] = 0
+
+    return out
