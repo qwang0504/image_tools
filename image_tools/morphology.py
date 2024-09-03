@@ -168,7 +168,7 @@ def bwareafilter_centroid_cv2(
     n_components, labels, stats, centroids = cv2.connectedComponentsWithStats(
         ar,
         connectivity = connectivity,
-        cv2.CV_32S
+        ltype = cv2.CV_16U
     )
     kept_centroids = []
     for c in range(1,n_components):
@@ -203,7 +203,7 @@ def bwareafilter_props_cv2(
     n_components, labels, stats, centroids = cv2.connectedComponentsWithStats(
         ar,
         connectivity = connectivity,
-        cv2.CV_32S
+        ltype = cv2.CV_16U
     )
     kept_blobs = []
     for c in range(1,n_components):
@@ -232,7 +232,7 @@ def bwareafilter_cv2(
     n_components, labels, stats, centroids = cv2.connectedComponentsWithStats(
         ar,
         connectivity = connectivity,
-        cv2.CV_32S
+        ltype = cv2.CV_16U
     )
     out = ar.copy()
     for c in range(1, n_components):
