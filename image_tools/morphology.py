@@ -5,6 +5,7 @@ from typing import Tuple, Optional, List
 from skimage.measure import regionprops
 from skimage.measure._regionprops import _RegionProperties
 import cv2
+from dataclasses import dataclass
 
 # those are essentially stripped down versions of 
 # skimage.morphology.remove_small_objects
@@ -182,6 +183,11 @@ def bwareafilter_centroid_cv2(
 
     return np.asarray(centroids, dtype=np.float32)
 
+@dataclass
+class RegionPropsLike:
+    centroid: NDArray
+    coords: NDArray
+    
 def bwareafilter_props_cv2(
         ar: NDArray, 
         min_size: int = 64, 
@@ -191,7 +197,7 @@ def bwareafilter_props_cv2(
         min_width: Optional[int] = None,
         max_width: Optional[int] = None,
         connectivity: int = 4
-    ) -> list:
+    ) -> list[RegionPropsLike]:
     # return list of blobs, where blobs have centroid and coords
 
     n_components, labels, stats, centroids = cv2.connectedComponentsWithStats(
@@ -208,9 +214,11 @@ def bwareafilter_props_cv2(
         keep_height = (min_length is None) or (max_length is None) or (h > min_length and h < max_length)
         keep_area = area > min_size and area < max_size
         if all((keep_width, keep_height, keep_area)):
-            # blob.centroid
-            # blob.coords
-            kept_blobs.append(centroids[c])
+            blob = RegionPropsLike(
+                centroid = centroids[c],
+                coords=np.transpose(np.nonzero(labels == c))
+            )
+            kept_blobs.append(blob)
 
     return kept_blobs
 
