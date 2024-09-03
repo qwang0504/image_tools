@@ -214,7 +214,6 @@ def bwareafilter_props_cv2(
 
     return kept_blobs
 
-
 def bwareafilter_cv2(
         ar: NDArray, 
         min_size: int = 64, 
