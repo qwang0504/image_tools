@@ -4,6 +4,7 @@ from numpy.typing import NDArray
 from typing import Tuple, Optional, List
 from skimage.measure import regionprops
 from skimage.measure._regionprops import _RegionProperties
+import cv2
 
 # those are essentially stripped down versions of 
 # skimage.morphology.remove_small_objects
@@ -113,6 +114,38 @@ def bwareafilter_centroids(
                 continue
         y, x = blob.centroid
         centroids.append([x, y])
+    return np.asarray(centroids, dtype=np.float32)
+
+def bwareafilter_centroid_cv2(
+        ar: NDArray, 
+        min_size: int = 64, 
+        max_size: int = 256, 
+        min_length: Optional[int] = None,
+        max_length: Optional[int] = None,
+        min_width: Optional[int] = None,
+        max_width: Optional[int] = None,
+        connectivity: int = 4
+    ):
+    # note that width and length are not treated equivalently to bwareafilter_centroids
+    # here it is the width and height of the bounding box instead of minor and major axis
+
+    n_components, labels, stats, centroids = cv2.connectedComponentsWithStats(
+        ar,
+        connectivity = connectivity,
+        cv2.CV_32S
+    )
+    kept_centroids = []
+    for c in range(n_components):
+        if not (min_size < stats[c, cv2.CC_STAT_AREA] < max_size):
+            continue
+        if (min_width is not None) and (max_width is not None) and (max_width > 0):
+            if not (min_width < stats[c, cv2.CC_STAT_WIDTH] < max_width):
+                continue
+        if (min_length is not None) and (max_length is not None)  and (max_length > 0):
+            if not (min_length < stats[i, cv2.CC_STAT_HEIGHT]< max_length):
+                continue
+        kept_centroids.append(centroids[c])
+        
     return np.asarray(centroids, dtype=np.float32)
 
 def bwareaopen_props(
