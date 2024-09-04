@@ -4,6 +4,8 @@ from numpy.typing import NDArray
 from typing import Tuple, Optional, List
 from skimage.measure import regionprops
 from skimage.measure._regionprops import _RegionProperties
+import cv2
+from dataclasses import dataclass
 
 # those are essentially stripped down versions of 
 # skimage.morphology.remove_small_objects
@@ -119,7 +121,7 @@ def bwareaopen_props(
         ar: NDArray, 
         min_size: int = 64, 
         connectivity: int = 1
-    ) -> list:
+    ) -> List:
 
     props = properties(ar, connectivity)
     return [blob for blob in props if blob.area > min_size]
@@ -133,7 +135,7 @@ def bwareafilter_props(
         min_width: Optional[int] = None,
         max_width: Optional[int] = None,
         connectivity: int = 1
-    ) -> list:
+    ) -> List[_RegionProperties]:
 
     props = properties(ar, connectivity)
     filtered_props = []
@@ -149,3 +151,93 @@ def bwareafilter_props(
         filtered_props.append(blob)
     return filtered_props
 
+def bwareafilter_centroids_cv2(
+        ar: cv2.UMat, 
+        min_size: int = 64, 
+        max_size: int = 256, 
+        min_length: Optional[int] = None,
+        max_length: Optional[int] = None,
+        min_width: Optional[int] = None,
+        max_width: Optional[int] = None,
+        connectivity: int = 4
+    ):
+    # note that width and length are not treated equivalently to bwareafilter_centroids
+    # here it is the width and height of the bounding box instead of minor and major axis
+    # TODO handle None
+
+    n_components, labels, stats, centroids = cv2.connectedComponentsWithStats(
+        ar,
+        connectivity = connectivity,
+        ltype = cv2.CV_16U
+    )
+    kept_centroids = []
+    for c in range(1, n_components):
+        w = stats[c, cv2.CC_STAT_WIDTH]
+        h = stats[c, cv2.CC_STAT_HEIGHT]
+        area = stats[c, cv2.CC_STAT_AREA]
+        keep_width = (max_width == 0) or (min_width is None) or (max_width is None) or (w > min_width and w < max_width)
+        keep_height = (max_length == 0) or (min_length is None) or (max_length is None) or (h > min_length and h < max_length)
+        keep_area = area > min_size and area < max_size
+        if all((keep_width, keep_height, keep_area)):
+            kept_centroids.append(centroids[c])
+
+    return np.asarray(kept_centroids, dtype=np.float32)
+
+@dataclass
+class RegionPropsLike:
+    centroid: NDArray
+    coords: NDArray
+    
+def bwareafilter_props_cv2(
+        ar: cv2.UMat, 
+        min_size: int = 64, 
+        max_size: int = 256, 
+        min_length: Optional[int] = None,
+        max_length: Optional[int] = None,
+        min_width: Optional[int] = None,
+        max_width: Optional[int] = None,
+        connectivity: int = 4
+    ) -> List[RegionPropsLike]:
+    # return list of blobs, where blobs have centroid and coords
+
+    n_components, labels, stats, centroids = cv2.connectedComponentsWithStats(
+        ar,
+        connectivity = connectivity,
+        ltype = cv2.CV_16U
+    )
+    kept_blobs = []
+    for c in range(1,n_components):
+        w = stats[c, cv2.CC_STAT_WIDTH]
+        h = stats[c, cv2.CC_STAT_HEIGHT]
+        area = stats[c, cv2.CC_STAT_AREA]
+        keep_width = (max_width == 0) or (min_width is None) or (max_width is None) or (w > min_width and w < max_width)
+        keep_height = (max_length == 0) or (min_length is None) or (max_length is None) or (h > min_length and h < max_length)
+        keep_area = area > min_size and area < max_size
+        if all((keep_width, keep_height, keep_area)):
+            blob = RegionPropsLike(
+                centroid = centroids[c],
+                coords=np.transpose(np.nonzero(labels == c))
+            )
+            kept_blobs.append(blob)
+
+    return kept_blobs
+
+def bwareafilter_cv2(
+        ar: cv2.UMat,
+        min_size: int = 64, 
+        max_size: int = 256, 
+        connectivity: int = 4
+        ) -> NDArray:
+    
+    n_components, labels, stats, centroids = cv2.connectedComponentsWithStats(
+        ar,
+        connectivity = connectivity,
+        ltype = cv2.CV_16U
+    )
+    for c in range(1, n_components):
+        area = stats[c, cv2.CC_STAT_AREA]
+        keep_area = area > min_size and area < max_size
+        if not keep_area:
+            ar[labels == c] = 0
+
+    return ar.get()
