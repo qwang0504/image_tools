@@ -8,7 +8,6 @@ from .roi_selector_widget import *
 from .polyroi import *
 from .GUIs import *
 from .polygons import *
-
 from .enhance_gpu import *
 from .convert_gpu import *
 from .rotation_gpu import *
