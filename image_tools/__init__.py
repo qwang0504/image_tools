@@ -9,10 +9,7 @@ from .polyroi import *
 from .GUIs import *
 from .polygons import *
 
-try:
-    from .enhance_gpu import *
-    from .convert_gpu import *
-    from .rotation_gpu import *
-    from .morphology_gpu import *
-except:
-    print('No GPU available')
+from .enhance_gpu import *
+from .convert_gpu import *
+from .rotation_gpu import *
+from .morphology_gpu import *
