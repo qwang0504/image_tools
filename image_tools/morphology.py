@@ -6,6 +6,8 @@ from skimage.measure import regionprops
 from skimage.measure._regionprops import _RegionProperties
 import cv2
 from dataclasses import dataclass
+from sklearn.decomposition import PCA
+
 
 # those are essentially stripped down versions of 
 # skimage.morphology.remove_small_objects
@@ -187,7 +189,17 @@ def bwareafilter_centroids_cv2(
 class RegionPropsLike:
     centroid: NDArray
     coords: NDArray
-    
+
+    @property
+    def principal_axis(self, heading: NDArray):
+        pca = PCA()
+        scores = pca.fit_transform(self.coords)
+        principal_axis = pca.components_[0,:]
+        # Resolve 180 deg ambiguity by aligning with heading vector
+        if principal_axis @ heading < 0:
+            principal_axis = -principal_axis
+        return principal_axis
+
 def bwareafilter_props_cv2(
         ar: cv2.UMat, 
         min_size: int = 64, 
