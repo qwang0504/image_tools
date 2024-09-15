@@ -228,9 +228,10 @@ def bwareafilter_props_cv2(
         keep_height = (max_length == 0) or (min_length is None) or (max_length is None) or (h > min_length and h < max_length)
         keep_area = area > min_size and area < max_size
         if all((keep_width, keep_height, keep_area)):
+            coordinates_row_col = np.transpose(np.nonzero(labels == c))
             blob = RegionPropsLike(
                 centroid = centroids[c],
-                coords=np.transpose(np.nonzero(labels == c))
+                coords = coordinates_row_col[::-1]
             )
             kept_blobs.append(blob)
 
