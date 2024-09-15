@@ -188,15 +188,16 @@ def bwareafilter_centroids_cv2(
 # TODO this needs some fixing
 @dataclass
 class RegionPropsLike:
-    centroid: NDArray
-    coords: NDArray
+    centroid: NDArray # row, col
+    coords: NDArray # row, col
 
     @property
     def principal_axis(self):
         up = np.array([0.0, 1.0])
         pca = PCA()
-        scores = pca.fit_transform(self.coords)
-        principal_axis = np.transpose(pca.components_)[:,1]
+        coords_xy = self.coords[::-1]
+        scores = pca.fit_transform(coords_xy) 
+        principal_axis = pca.components_[1,:]
         # Resolve 180 deg ambiguity by aligning with up direction
         if principal_axis @ up < 0:
             principal_axis = -principal_axis
@@ -228,10 +229,9 @@ def bwareafilter_props_cv2(
         keep_height = (max_length == 0) or (min_length is None) or (max_length is None) or (h > min_length and h < max_length)
         keep_area = area > min_size and area < max_size
         if all((keep_width, keep_height, keep_area)):
-            coordinates_row_col = np.transpose(np.nonzero(labels == c))
             blob = RegionPropsLike(
-                centroid = centroids[c],
-                coords = coordinates_row_col[::-1]
+                centroid = centroids[c][::-1], # row, col
+                coords = np.transpose(np.nonzero(labels == c)) # row, col
             )
             kept_blobs.append(blob)
 
