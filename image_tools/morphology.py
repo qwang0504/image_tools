@@ -185,7 +185,6 @@ def bwareafilter_centroids_cv2(
 
     return np.asarray(kept_centroids, dtype=np.float32)
 
-# TODO this needs some fixing
 @dataclass
 class RegionPropsLike:
     centroid: NDArray # row, col
@@ -197,7 +196,7 @@ class RegionPropsLike:
         pca = PCA()
         coords_xy = self.coords[::-1]
         scores = pca.fit_transform(coords_xy) 
-        principal_axis = pca.components_[1,:]
+        principal_axis = pca.components_[0,:]
         # Resolve 180 deg ambiguity by aligning with up direction
         if principal_axis @ up < 0:
             principal_axis = -principal_axis
