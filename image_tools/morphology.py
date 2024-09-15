@@ -150,6 +150,7 @@ def bwareafilter_props(
         if (min_length is not None) and (max_length is not None) and (max_length > 0):
             if not (min_length < 2*blob.axis_major_length < max_length):
                 continue
+        print(blob.area)
         filtered_props.append(blob)
     return filtered_props
 
@@ -252,5 +253,6 @@ def bwareafilter_cv2(
         keep_area = area > min_size and area < max_size
         if not keep_area:
             ar[labels == c] = 0
+        print(keep_area)
 
     return ar
