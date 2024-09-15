@@ -240,4 +240,4 @@ def bwareafilter_cv2(
         if not keep_area:
             ar[labels == c] = 0
 
-    return ar.get()
+    return ar
