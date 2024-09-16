@@ -194,7 +194,7 @@ class RegionPropsLike:
     def principal_axis(self):
         up = np.array([0.0, 1.0])
         pca = PCA()
-        coords_xy = self.coords[::-1]
+        coords_xy = np.fliplr(self.coords) # row,col to x,y
         scores = pca.fit_transform(coords_xy) 
         principal_axis = pca.components_[0,:]
         # Resolve 180 deg ambiguity by aligning with up direction
