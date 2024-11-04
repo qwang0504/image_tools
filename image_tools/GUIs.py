@@ -49,13 +49,15 @@ class ImageViewer(QGraphicsView):
         """
         zoom with wheel
         """
+
+        if event.modifiers() == Qt.NoModifier:
         
-        delta = event.angleDelta().y()
-        zoom = delta and delta // abs(delta)
-        if zoom > 0:
-            self.scale(1+self.ZOOM_FACTOR, 1+self.ZOOM_FACTOR)
-        else:
-            self.scale(1-self.ZOOM_FACTOR, 1-self.ZOOM_FACTOR)
+            delta = event.angleDelta().y()
+            zoom = delta and delta // abs(delta)
+            if zoom > 0:
+                self.scale(1+self.ZOOM_FACTOR, 1+self.ZOOM_FACTOR)
+            else:
+                self.scale(1-self.ZOOM_FACTOR, 1-self.ZOOM_FACTOR)
     
 #TODO make sure it works with RGB and grayscale images 
 class CloneTool(QWidget):
@@ -88,7 +90,7 @@ class CloneTool(QWidget):
         self.pen = QPen()
         self.pen.setWidth(1)
         self.pen.setBrush(Qt.black)
-        self.pen.setStyle(Qt.DashDotLine);
+        self.pen.setStyle(Qt.DotLine)
 
         self.selection_ellipse = QGraphicsEllipseItem(0, 0, 2*self.radius, 2*self.radius)
         self.selection_ellipse.setPen(self.pen)
@@ -103,13 +105,13 @@ class CloneTool(QWidget):
 
         self.radius_spinbox = LabeledSliderSpinBox()
         self.radius_spinbox.setText('Radius (px)')
-        self.radius_spinbox.setRange(0, np.max(self.image.shape))
+        self.radius_spinbox.setRange(5, np.max(self.image.shape))
         self.radius_spinbox.setValue(self.DEFAULT_RADIUS)
         self.radius_spinbox.valueChanged.connect(self.radius_changed)
 
         self.hardness_spinbox = LabeledSliderDoubleSpinBox()
         self.hardness_spinbox.setText('Hardness')
-        self.hardness_spinbox.setRange(0.25, 0.75)
+        self.hardness_spinbox.setRange(0.05, 2.0)
         self.hardness_spinbox.setSingleStep(0.05)
         self.hardness_spinbox.setValue(self.DEFAULT_HARDNESS)
         self.hardness_spinbox.valueChanged.connect(self.hardness_changed)
@@ -119,8 +121,9 @@ class CloneTool(QWidget):
         x = np.linspace(-1, 1, int(2*self.radius))
         y = np.linspace(-1, 1, int(2*self.radius))
         x, y = np.meshgrid(x, y)
-        self.mask = np.exp(-(x**2 + y**2) / (2 * self.hardness**2))
-        self.mask = self.mask / np.max(self.mask) 
+        self.mask = np.exp(-(x**2 + y**2) / (2*self.hardness**2))
+        self.mask = (self.mask - np.min(self.mask)) / (np.max(self.mask) - np.min(self.mask)) 
+        self.mask[(x**2 + y**2) >= 1] = 0
 
     def hardness_changed(self):
         self.hardness = self.hardness_spinbox.value()
@@ -180,6 +183,17 @@ class CloneTool(QWidget):
                 ]
                 blend[:] = self.mask*self.data + (1-self.mask)*blend
                 self.viewer.set_image(self.image)
+
+    def wheelEvent(self, event):
+
+        if event.modifiers() == Qt.ControlModifier:
+            
+            delta = event.angleDelta().y()
+            zoom = delta and delta // abs(delta)
+            if zoom > 0:
+                self.radius_spinbox.stepBy(5)
+            else:
+                self.radius_spinbox.stepBy(-5)
 
     def get_image(self):
         return self.image
