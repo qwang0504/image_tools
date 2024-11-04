@@ -181,6 +181,9 @@ class CloneTool(QWidget):
                 blend[:] = self.mask*self.data + (1-self.mask)*blend
                 self.viewer.set_image(self.image)
 
+    def get_image(self):
+        return self.image
+    
 class ControlPoint(ImageViewer):
 
     POINT_RADIUS = 1.5
