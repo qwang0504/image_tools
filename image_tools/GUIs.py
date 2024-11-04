@@ -57,6 +57,129 @@ class ImageViewer(QGraphicsView):
         else:
             self.scale(1-self.ZOOM_FACTOR, 1-self.ZOOM_FACTOR)
     
+#TODO make sure it works with RGB and grayscale images 
+class CloneTool(QWidget):
+    '''
+    Clone tool to manually modify images. 
+    Copy data from a location and blend it with an other location
+    '''
+
+    DEFAULT_RADIUS: int = 20
+    DEFAULT_HARDNESS: float = 0.5
+
+    def __init__(
+            self, 
+            image: np.ndarray, 
+            *args, 
+            **kwargs
+        ) -> None:
+
+        super().__init__(*args, **kwargs)
+
+        self.image = image
+        self.radius = self.DEFAULT_RADIUS
+        self.hardness = self.DEFAULT_HARDNESS
+        self.data = np.zeros((int(2*self.radius), int(2*self.radius)), dtype=np.uint8)
+
+        self.create_widgets()
+        self.layout_widgets()
+        self.create_mask()
+
+        self.pen = QPen()
+        self.pen.setWidth(1)
+        self.pen.setBrush(Qt.black)
+        self.pen.setStyle(Qt.DashDotLine);
+
+        self.selection_ellipse = QGraphicsEllipseItem(0, 0, 2*self.radius, 2*self.radius)
+        self.selection_ellipse.setPen(self.pen)
+        self.viewer.scene.addItem(self.selection_ellipse)
+
+    def create_widgets(self):
+
+        self.viewer = ImageViewer(self.image)
+        self.viewer.setMouseTracking(True)
+        self.viewer.mouseMoveEvent = self.mouseMoveEvent
+        self.viewer.mousePressEvent = self.mousePressEvent
+
+        self.radius_spinbox = LabeledSliderSpinBox()
+        self.radius_spinbox.setText('Radius (px)')
+        self.radius_spinbox.setRange(0, np.max(self.image.shape))
+        self.radius_spinbox.setValue(self.DEFAULT_RADIUS)
+        self.radius_spinbox.valueChanged.connect(self.radius_changed)
+
+        self.hardness_spinbox = LabeledSliderDoubleSpinBox()
+        self.hardness_spinbox.setText('Hardness')
+        self.hardness_spinbox.setRange(0.25, 0.75)
+        self.hardness_spinbox.setSingleStep(0.05)
+        self.hardness_spinbox.setValue(self.DEFAULT_HARDNESS)
+        self.hardness_spinbox.valueChanged.connect(self.hardness_changed)
+
+    def create_mask(self):
+
+        x = np.linspace(-1, 1, int(2*self.radius))
+        y = np.linspace(-1, 1, int(2*self.radius))
+        x, y = np.meshgrid(x, y)
+        self.mask = np.exp(-(x**2 + y**2) / (2 * self.hardness**2))
+        self.mask = self.mask / np.max(self.mask) 
+
+    def hardness_changed(self):
+        self.hardness = self.hardness_spinbox.value()
+
+        # modify blend mask
+        self.create_mask()
+
+    def radius_changed(self):
+        self.radius = self.radius_spinbox.value()
+
+        # modify blend mask
+        self.create_mask()
+
+        # modify ellipse
+        rect = self.selection_ellipse.rect()
+        rect.setHeight(int(2*self.radius))
+        rect.setWidth(int(2*self.radius))
+        self.selection_ellipse.setRect(rect)
+
+    def layout_widgets(self):
+        
+        main_layout = QHBoxLayout(self)
+
+        controls = QVBoxLayout()
+        controls.addWidget(self.radius_spinbox)
+        controls.addWidget(self.hardness_spinbox)
+        controls.addStretch()
+
+        main_layout.addWidget(self.viewer)
+        main_layout.addLayout(controls)
+    
+    def mouseMoveEvent(self, event):
+
+        widget_pos = event.pos()
+        scene_pos = self.viewer.mapToScene(widget_pos)
+        self.selection_ellipse.setRect(scene_pos.x()-self.radius, scene_pos.y()-self.radius, 2*self.radius, 2*self.radius)
+    
+    def mousePressEvent(self, event):
+
+        widget_pos = event.pos()
+        scene_pos = self.viewer.mapToScene(widget_pos)
+
+        if event.button() == Qt.LeftButton:
+
+            if event.modifiers() == Qt.ControlModifier:
+                # copy pixels  
+                self.data = self.image[
+                    int(scene_pos.y()-self.radius):int(scene_pos.y()+self.radius),
+                    int(scene_pos.x()-self.radius):int(scene_pos.x()+self.radius),
+                ]
+
+            else:
+                # blend pixels
+                blend = self.image[
+                    int(scene_pos.y()-self.radius):int(scene_pos.y()+self.radius),
+                    int(scene_pos.x()-self.radius):int(scene_pos.x()+self.radius),
+                ]
+                blend[:] = self.mask*self.data + (1-self.mask)*blend
+                self.viewer.set_image(self.image)
 
 class ControlPoint(ImageViewer):
 
