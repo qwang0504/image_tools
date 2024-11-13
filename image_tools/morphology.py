@@ -191,15 +191,21 @@ class RegionPropsLike:
     coords: NDArray # row, col
 
     @property
-    def principal_axis(self):
+    def principal_axis(self) -> Optional[NDArray]:
         up = np.array([0.0, 1.0])
-        pca = PCA()
         coords_xy = np.fliplr(self.coords) # row,col to x,y
+
+        if (coords_xy.shape[0] <= 1) or np.any(np.var(coords_xy, axis=0) == 0):
+            return None
+
+        pca = PCA()
         scores = pca.fit_transform(coords_xy) 
         principal_axis = pca.components_[0,:]
+
         # Resolve 180 deg ambiguity by aligning with up direction
         if principal_axis @ up < 0:
             principal_axis = -principal_axis
+
         return principal_axis
 
 def bwareafilter_props_cv2(
