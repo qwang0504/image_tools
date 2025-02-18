@@ -717,7 +717,7 @@ class DrawPolyMask(ImageViewer):
         self.masks = masks
 
     def flatten(self):
-        flat_array = np.zeros_like(self.image)
+        flat_array = np.zeros(self.image.shape[:2])
         for k, v in self.masks.items():
             flat_array &= v[1]
         return flat_array
