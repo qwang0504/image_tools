@@ -2,10 +2,10 @@ from PyQt5.QtWidgets import (
     QWidget, QGraphicsScene, QGraphicsView, QGraphicsTextItem, 
     QGraphicsEllipseItem, QGraphicsItemGroup, QGraphicsItem, 
     QVBoxLayout, QHBoxLayout, QPushButton, QCheckBox,
-    QGraphicsLineItem
+    QGraphicsLineItem, QDialog
 )
 from PyQt5.QtCore import pyqtSignal, Qt, QRectF, QPoint, QPointF, QLineF
-from PyQt5.QtGui import QBrush, QPen, QFont, QPixmap, QPainter
+from PyQt5.QtGui import QBrush, QPen, QFont, QPixmap
 from qt_widgets import NDarray_to_QPixmap, LabeledSliderDoubleSpinBox, LabeledSliderSpinBox
 import pyqtgraph as pg
 
@@ -716,6 +716,12 @@ class DrawPolyMask(ImageViewer):
     def set_masks(self, masks: dict) -> None:
         self.masks = masks
 
+    def flatten(self):
+        flat_array = np.zeros_like(self.image)
+        for k, v in self.masks.items():
+            flat_array &= v[1]
+        return flat_array
+    
     def get_ID(self) -> int:
         return self.ID
         
@@ -810,3 +816,17 @@ class DrawPolyMask(ImageViewer):
             line.setP2(scene_pos)
             self.current_line.setLine(line)
         
+class DrawPolyMaskDialog(QDialog):
+
+    def __init__(self, image: np.ndarray, *args, **kwargs) -> None:
+        super().__init__()
+        self.drawer = DrawPolyMask(image)
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.drawer)
+        self.setLayout(layout)
+
+    def get_masks(self):
+        return self.drawer.get_masks()
+    
+    def flatten(self):
+        return self.drawer.flatten()
