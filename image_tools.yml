@@ -1,8 +1,8 @@
-name: image_tool
+name: image_tools
 channels:
 - conda-forge
 dependencies:
-  - python == 3.8.18
+  - python == 3.8.16
   - ipython
   - pyqt
   - pip
